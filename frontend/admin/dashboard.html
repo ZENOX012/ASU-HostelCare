@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Warden Command Center — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Warden Office</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Command Center</span>
+        </a>
+        <a href="javascript:void(0)" onclick="switchSection('students')" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Student Directory</span>
+        </a>
+        <a href="/admin/staff.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="22" y1="11" x2="16" y2="11"></line></svg>
+          <span>Staff & Workers</span>
+        </a>
+        <a href="/admin/gym.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Settings</span>
+        </a>
+        <a href="/admin/reports.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Reports & Export</span>
+        </a>
+        <a href="/admin/database.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <span>Database Inspector</span>
+        </a>
+        <a href="/admin/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Warden Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Hostel Warden Administration</h1>
+          <span class="role-tag role-warden">Super Admin</span>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Notification Bell -->
+          <div class="bell-container">
+            <button id="bell-button" class="bell-btn" title="Notifications">
+              <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="bell-badge" class="bell-badge" style="display: none;">0</span>
+            </button>
+            <div id="bell-dropdown" class="bell-dropdown">
+              <div class="bell-dropdown-header">
+                <span style="font-weight: 700; color: #ffffff;">Hostel Alerts</span>
+                <button onclick="markAllNotificationsRead()" style="background:none;border:none;color:var(--gold-400);font-size:0.75rem;cursor:pointer;">Mark all read</button>
+              </div>
+              <div id="bell-notification-list" class="bell-list"></div>
+            </div>
+          </div>
+
+          <!-- Profile Link -->
+          <a href="/admin/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Hostel Warden</div>
+              <div id="topbar-user-room" class="user-room">Chief Administrator</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="margin-bottom: 2rem;">
+          <h2 class="gold-text">Campus Operations Command Center</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Dedicated record management: Registered students, complaints history, admission approvals, and facility staff.
+          </p>
+        </div>
+
+        <!-- KPI Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card" onclick="switchSection('complaints')" style="cursor: pointer;">
+            <div class="stat-icon" style="color: #60a5fa; background: rgba(59, 130, 246, 0.12);">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-total-comp" class="stat-value">0</span>
+              <span class="stat-label">Total Grievances</span>
+            </div>
+          </div>
+
+          <div class="stat-card" onclick="switchSection('students')" style="cursor: pointer;">
+            <div class="stat-icon" style="color: #38bdf8; background: rgba(56, 189, 248, 0.12);">
+              <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-total-students" class="stat-value">0</span>
+              <span class="stat-label">Registered Students</span>
+            </div>
+          </div>
+
+          <div class="stat-card" onclick="switchSection('approvals')" style="cursor: pointer; border-color: rgba(220, 38, 38, 0.4);">
+            <div class="stat-icon" style="color: #f87171; background: rgba(220, 38, 38, 0.12);">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-pending-approvals" class="stat-value" style="color: #f87171;">0</span>
+              <span class="stat-label">Pending Registrations</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #4ade80; background: rgba(34, 197, 94, 0.12);">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-res-rate" class="stat-value">0%</span>
+              <span class="stat-label">Resolution Rate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distinct Section Tabs -->
+        <div class="section-tab-bar">
+          <button id="tab-btn-complaints" class="section-tab active" onclick="switchSection('complaints')">
+            📋 Master Complaints Directory
+          </button>
+          <button id="tab-btn-students" class="section-tab" onclick="switchSection('students')">
+            👥 Registered Students & History
+          </button>
+          <button id="tab-btn-approvals" class="section-tab" onclick="switchSection('approvals')">
+            ⏳ Pending Student Approvals 
+            <span id="approvals-badge" class="badge badge-emergency" style="display: none; margin-left: 4px;">0</span>
+          </button>
+          <button id="tab-btn-staff" class="section-tab" onclick="switchSection('staff')">
+            👷 Workers & Tradespersons
+          </button>
+        </div>
+
+        <!-- =========================================================================
+             SECTION 1: MASTER COMPLAINTS DIRECTORY
+             ========================================================================= -->
+        <div id="section-complaints">
+          <div class="table-container">
+            <div class="table-header-bar">
+              <div class="table-title">Master Complaint Records</div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center;">
+                <input type="text" id="complaint-search-input" onkeyup="filterComplaintsLocally()" placeholder="Search code, student, room..." class="record-search-box">
+                <select id="admin-status-filter" class="form-select" onchange="loadAdminComplaints()" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                  <option value="">All Statuses</option>
+                  <option value="Submitted">Submitted (Unassigned)</option>
+                  <option value="Assigned">Assigned</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Awaiting Confirmation">Awaiting Confirmation</option>
+                  <option value="Resolved">Resolved</option>
+                </select>
+                <select id="admin-category-filter" class="form-select" onchange="loadAdminComplaints()" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+                  <option value="">All Categories</option>
+                  <option value="Room">Room</option>
+                  <option value="Water & Electricity">Water & Electricity</option>
+                  <option value="Internet">Internet</option>
+                  <option value="Laundry">Laundry</option>
+                  <option value="Mess">Mess</option>
+                  <option value="Gym">Gym</option>
+                  <option value="Common Areas">Common Areas</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="modern-table">
+                <thead>
+                  <tr>
+                    <th>Ticket Code</th>
+                    <th>Resident / Room</th>
+                    <th>Category</th>
+                    <th>Title</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Assigned Staff</th>
+                    <th>Filed Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-complaints-tbody">
+                  <tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading complaints records...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================================================
+             SECTION 2: ALL REGISTERED STUDENTS (KON REGISTER KIYA HAI & KYA COMPLAINT KIYA)
+             ========================================================================= -->
+        <div id="section-students" style="display: none;">
+          <div class="table-container">
+            <div class="table-header-bar">
+              <div>
+                <div class="table-title">Registered Students Directory</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                  Complete roster of all students registered in Hostel Block A & Block B. Click "View Complaints" to inspect their full complaint history.
+                </div>
+              </div>
+              <div>
+                <input type="text" id="student-search-input" onkeyup="filterStudentsLocally()" placeholder="Filter by student name, room, email..." class="record-search-box" style="min-width: 240px;">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="modern-table">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Contact Email</th>
+                    <th>Mobile</th>
+                    <th>Hostel Block</th>
+                    <th>Room</th>
+                    <th>Approval Status</th>
+                    <th>Complaints Filed</th>
+                    <th>Registered Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="students-directory-tbody">
+                  <tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading students directory...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================================================
+             SECTION 3: PENDING ADMISSIONS APPROVALS
+             ========================================================================= -->
+        <div id="section-approvals" style="display: none;">
+          <div class="table-container">
+            <div class="table-header-bar">
+              <div>
+                <div class="table-title">Pending Student Admissions (Awaiting Review)</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                  New resident students must be reviewed and approved by the Warden before they can sign in.
+                </div>
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table class="modern-table">
+                <thead>
+                  <tr>
+                    <th>Applicant Name</th>
+                    <th>Email Address</th>
+                    <th>Contact Phone</th>
+                    <th>Hostel Block</th>
+                    <th>Room Assigned</th>
+                    <th>Registered At</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="pending-students-tbody">
+                  <tr><td colspan="7" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading pending registrations...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================================================
+             SECTION 4: WORKERS & TRADESPERSONS ROSTER
+             ========================================================================= -->
+        <div id="section-staff" style="display: none;">
+          <div class="table-container">
+            <div class="table-header-bar">
+              <div>
+                <div class="table-title">Hostel Maintenance Tradespersons & Staff</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">
+                  Active maintenance personnel available for smart complaint dispatch.
+                </div>
+              </div>
+              <a href="/admin/staff.html" class="btn btn-outline-gold btn-sm">+ Manage & Add Staff</a>
+            </div>
+            <div class="table-responsive">
+              <table class="modern-table">
+                <thead>
+                  <tr>
+                    <th>Staff Name</th>
+                    <th>Trade Specialization</th>
+                    <th>Work Shift</th>
+                    <th>Phone</th>
+                    <th>Account Email</th>
+                    <th>Active Assignments</th>
+                  </tr>
+                </thead>
+                <tbody id="staff-roster-tbody">
+                  <tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading staff records...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 1: STUDENT COMPLAINTS HISTORY MODAL
+       ========================================================================= -->
+  <div id="student-complaints-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 840px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <img id="sc-modal-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" style="width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--gold-400); object-fit: cover; background:#fff;">
+          <div>
+            <h3 id="sc-modal-student-name" style="font-family: var(--font-academic); font-size: 1.25rem; color: #ffffff;">Student Grievance History</h3>
+            <span id="sc-modal-student-meta" style="font-size: 0.82rem; color: var(--gold-400);"></span>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('student-complaints-modal')">&times;</button>
+      </div>
+
+      <div style="margin-bottom: 1rem; padding: 0.75rem 1rem; background: rgba(9, 18, 32, 0.6); border: 1px solid var(--card-border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+        <span id="sc-modal-contact-info" style="font-size: 0.85rem; color: var(--text-secondary);"></span>
+        <span id="sc-modal-status-badge"></span>
+      </div>
+
+      <div class="table-responsive" style="max-height: 440px; overflow-y: auto;">
+        <table class="modern-table">
+          <thead>
+            <tr>
+              <th>Ticket Code</th>
+              <th>Category</th>
+              <th>Issue Title</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Assigned Staff</th>
+              <th>Resolution Proof</th>
+              <th>Filed Date</th>
+            </tr>
+          </thead>
+          <tbody id="student-complaints-modal-tbody">
+            <tr><td colspan="8" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading complaints for this student...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL 2: SMART WORKER DISPATCH MODAL
+       ========================================================================= -->
+  <div id="dispatch-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 620px;">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-family: var(--font-academic); font-size: 1.15rem; color: var(--gold-400);">Smart Worker Dispatch</h3>
+          <span id="dispatch-ticket-info" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('dispatch-modal')">&times;</button>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Tradespersons are ranked based on trade specialization matching and active shift availability.
+        </p>
+      </div>
+
+      <div id="dispatch-suggestions-list" style="max-height: 380px; overflow-y: auto;">
+        <div style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Calculating matches...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script src="/frontend/js/notifications.js"></script>
+  <script>
+    let activeDispatchComplaintId = null;
+    let masterComplaintsList = [];
+    let masterStudentsList = [];
+
+    // Switch between the 4 dedicated record sections
+    function switchSection(section) {
+      document.querySelectorAll(".section-tab").forEach(t => t.classList.remove("active"));
+      document.getElementById("section-complaints").style.display = "none";
+      document.getElementById("section-students").style.display = "none";
+      document.getElementById("section-approvals").style.display = "none";
+      document.getElementById("section-staff").style.display = "none";
+
+      if (section === "complaints") {
+        document.getElementById("tab-btn-complaints").classList.add("active");
+        document.getElementById("section-complaints").style.display = "block";
+        loadAdminComplaints();
+      } else if (section === "students") {
+        document.getElementById("tab-btn-students").classList.add("active");
+        document.getElementById("section-students").style.display = "block";
+        loadAllStudents();
+      } else if (section === "approvals") {
+        document.getElementById("tab-btn-approvals").classList.add("active");
+        document.getElementById("section-approvals").style.display = "block";
+        loadPendingApprovals();
+      } else if (section === "staff") {
+        document.getElementById("tab-btn-staff").classList.add("active");
+        document.getElementById("section-staff").style.display = "block";
+        loadStaffRoster();
+      }
+    }
+
+    async function loadStats() {
+      try {
+        const stats = await apiFetch("/api/reports/stats");
+        document.getElementById("kpi-total-comp").textContent = stats.total_complaints;
+        document.getElementById("kpi-pending-approvals").textContent = stats.pending_approvals;
+        document.getElementById("kpi-res-rate").textContent = `${stats.resolution_rate}%`;
+
+        // Update total students count
+        try {
+          const students = await apiFetch("/api/users/students");
+          document.getElementById("kpi-total-students").textContent = students.length;
+        } catch(e) {}
+
+        const badge = document.getElementById("approvals-badge");
+        if (stats.pending_approvals > 0) {
+          badge.textContent = stats.pending_approvals;
+          badge.style.display = "inline-flex";
+        } else {
+          badge.style.display = "none";
+        }
+      } catch (e) {}
+    }
+
+    // SECTION 1: Master Complaints
+    async function loadAdminComplaints() {
+      const status = document.getElementById("admin-status-filter").value;
+      const category = document.getElementById("admin-category-filter").value;
+      const tbody = document.getElementById("admin-complaints-tbody");
+
+      let endpoint = "/api/complaints?";
+      if (status) endpoint += `status_filter=${encodeURIComponent(status)}&`;
+      if (category) endpoint += `category_filter=${encodeURIComponent(category)}&`;
+
+      try {
+        const complaints = await apiFetch(endpoint);
+        masterComplaintsList = complaints;
+        renderComplaintsTable(complaints);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f87171; padding: 2rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    function renderComplaintsTable(complaints) {
+      const tbody = document.getElementById("admin-complaints-tbody");
+      if (complaints.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">No complaints match the filter criteria.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = complaints.map(c => {
+        const studentInfo = c.student ? `<div style="display:flex;align-items:center;gap:0.45rem;"><img src="${c.student.profile_photo || '/frontend/assets/default_avatar.svg'}" class="student-avatar-thumb"><div><strong>${c.student.full_name}</strong><br><span style="font-size:0.75rem;color:var(--text-muted);">${c.student.hostel_block}, Rm ${c.student.room_number}</span></div></div>` : "—";
+        const workerInfo = c.worker ? `${c.worker.full_name} (${c.worker.worker_specialization || "Staff"})` : `<span style="color:#f87171;">Unassigned</span>`;
+
+        return `
+          <tr>
+            <td><a href="/track.html?code=${c.complaint_code}" target="_blank" style="font-family:monospace;font-weight:700;">${c.complaint_code}</a></td>
+            <td>${studentInfo}</td>
+            <td>${c.category}</td>
+            <td style="font-weight:600;max-width:200px;">${c.title}</td>
+            <td>${getPriorityBadge(c.priority)}</td>
+            <td>${getStatusBadge(c.status)}</td>
+            <td>${workerInfo}</td>
+            <td style="font-size:0.78rem;">${formatDate(c.created_at)}</td>
+            <td>
+              <button onclick="openDispatchModal(${c.id})" class="btn btn-outline-gold btn-sm">
+                ${c.worker ? "Reassign" : "Dispatch Worker"}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function filterComplaintsLocally() {
+      const q = document.getElementById("complaint-search-input").value.toLowerCase();
+      const filtered = masterComplaintsList.filter(c => {
+        const code = (c.complaint_code || "").toLowerCase();
+        const student = (c.student ? c.student.full_name : "").toLowerCase();
+        const room = (c.student ? c.student.room_number : "").toLowerCase();
+        const title = (c.title || "").toLowerCase();
+        return code.includes(q) || student.includes(q) || room.includes(q) || title.includes(q);
+      });
+      renderComplaintsTable(filtered);
+    }
+
+    // SECTION 2: All Registered Students Directory (Kon register kiya hai)
+    async function loadAllStudents() {
+      const tbody = document.getElementById("students-directory-tbody");
+      try {
+        const students = await apiFetch("/api/users/students");
+        masterStudentsList = students;
+        renderStudentsTable(students);
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #f87171; padding: 2rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    function renderStudentsTable(students) {
+      const tbody = document.getElementById("students-directory-tbody");
+      if (students.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">No students registered yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = students.map(s => {
+        let statusBadge = '<span class="badge badge-status-resolved">Active / Approved</span>';
+        if (s.status === 'PENDING_APPROVAL') {
+          statusBadge = '<span class="badge badge-emergency">Pending Approval</span>';
+        } else if (s.status === 'REJECTED') {
+          statusBadge = '<span class="badge badge-high">Rejected</span>';
+        }
+
+        const compCountBadge = s.total_complaints > 0
+          ? `<span style="font-weight:700;color:var(--gold-400);">${s.total_complaints} total</span> <span style="font-size:0.75rem;color:var(--text-muted);">(${s.pending_complaints} pending)</span>`
+          : `<span style="color:var(--text-muted);">0 filed</span>`;
+
+        return `
+          <tr>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.6rem;">
+                <img src="${s.profile_photo}" class="student-avatar-thumb">
+                <span style="font-weight:600;color:#ffffff;">${s.full_name}</span>
+              </div>
+            </td>
+            <td>${s.email}</td>
+            <td>${s.phone || '—'}</td>
+            <td><strong>${s.hostel_block || '—'}</strong></td>
+            <td>Rm ${s.room_number || '—'}</td>
+            <td>${statusBadge}</td>
+            <td>${compCountBadge}</td>
+            <td style="font-size:0.78rem;">${formatDate(s.created_at)}</td>
+            <td>
+              <button onclick="inspectStudentComplaints(${s.id})" class="btn btn-outline-gold btn-sm" style="font-size:0.78rem;padding:0.35rem 0.65rem;">
+                🔍 View Complaints
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function filterStudentsLocally() {
+      const q = document.getElementById("student-search-input").value.toLowerCase();
+      const filtered = masterStudentsList.filter(s => {
+        const name = (s.full_name || "").toLowerCase();
+        const email = (s.email || "").toLowerCase();
+        const phone = (s.phone || "").toLowerCase();
+        const room = (s.room_number || "").toLowerCase();
+        const block = (s.hostel_block || "").toLowerCase();
+        return name.includes(q) || email.includes(q) || phone.includes(q) || room.includes(q) || block.includes(q);
+      });
+      renderStudentsTable(filtered);
+    }
+
+    // Open Student Complaint History Modal
+    async function inspectStudentComplaints(studentId) {
+      openModal("student-complaints-modal");
+      const tbody = document.getElementById("student-complaints-modal-tbody");
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading student complaints history...</td></tr>`;
+
+      try {
+        const data = await apiFetch(`/api/users/students/${studentId}/complaints`);
+        const s = data.student;
+        document.getElementById("sc-modal-avatar").src = s.profile_photo;
+        document.getElementById("sc-modal-student-name").textContent = s.full_name;
+        document.getElementById("sc-modal-student-meta").textContent = `${s.hostel_block} • Room ${s.room_number}`;
+        document.getElementById("sc-modal-contact-info").innerHTML = `Email: <strong>${s.email}</strong> &bull; Phone: <strong>${s.phone || 'N/A'}</strong>`;
+        
+        let badgeHtml = '<span class="badge badge-status-resolved">Approved Resident</span>';
+        if (s.status === 'PENDING_APPROVAL') badgeHtml = '<span class="badge badge-emergency">Pending Approval</span>';
+        document.getElementById("sc-modal-status-badge").innerHTML = badgeHtml;
+
+        if (data.complaints.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">This student has not filed any complaints yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.complaints.map(c => {
+          let proofHtml = '—';
+          if (c.resolution_photo) {
+            proofHtml = `<a href="${c.resolution_photo}" target="_blank" style="color:var(--gold-400);font-weight:600;">📷 Geo-Proof</a>`;
+          } else if (c.photo_evidence) {
+            proofHtml = `<a href="${c.photo_evidence}" target="_blank" style="color:var(--text-secondary);">📷 Issue Photo</a>`;
+          }
+
+          return `
+            <tr>
+              <td><a href="/track.html?code=${c.ticket_code}" target="_blank" style="font-family:monospace;font-weight:700;">${c.ticket_code}</a></td>
+              <td>${c.category}</td>
+              <td style="font-weight:600;max-width:180px;">${c.title}</td>
+              <td>${getPriorityBadge(c.priority)}</td>
+              <td>${getStatusBadge(c.status)}</td>
+              <td>${c.assigned_worker_name}</td>
+              <td>${proofHtml}</td>
+              <td style="font-size:0.75rem;">${formatDate(c.created_at)}</td>
+            </tr>
+          `;
+        }).join("");
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: #f87171; padding: 1.5rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    // SECTION 3: Pending Approvals
+    async function loadPendingApprovals() {
+      const tbody = document.getElementById("pending-students-tbody");
+      try {
+        const pending = await apiFetch("/api/users/pending");
+        if (pending.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 2rem; color: #4ade80;">✓ All student applications have been reviewed. No pending approvals.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = pending.map(u => `
+          <tr>
+            <td style="font-weight:600;color:#ffffff;">${u.full_name}</td>
+            <td>${u.email}</td>
+            <td>${u.phone || '—'}</td>
+            <td>${u.hostel_block || '—'}</td>
+            <td>${u.room_number || '—'}</td>
+            <td style="font-size:0.8rem;">${formatDate(u.created_at)}</td>
+            <td>
+              <div style="display:flex;gap:0.4rem;">
+                <button onclick="handleUserApproval(${u.id}, 'APPROVED')" class="btn btn-primary btn-sm" style="background:#22c55e;border-color:#16a34a;color:#ffffff;">Approve</button>
+                <button onclick="handleUserApproval(${u.id}, 'REJECTED')" class="btn btn-oxblood btn-sm">Reject</button>
+              </div>
+            </td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #f87171; padding: 2rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    async function handleUserApproval(userId, newStatus) {
+      try {
+        await apiFetch(`/api/users/${userId}/status`, {
+          method: "POST",
+          body: JSON.stringify({ status: newStatus })
+        });
+        showToast(`Resident application ${newStatus.toLowerCase()} successfully.`, "success");
+        loadPendingApprovals();
+        loadStats();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    // SECTION 4: Staff & Tradespersons
+    async function loadStaffRoster() {
+      const tbody = document.getElementById("staff-roster-tbody");
+      try {
+        const staff = await apiFetch("/api/users/workers");
+        if (staff.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">No staff registered yet. <a href="/admin/staff.html">Create worker accounts</a>.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = staff.map(w => `
+          <tr>
+            <td style="font-weight:600;color:#ffffff;">${w.full_name}</td>
+            <td><span class="badge badge-low">${w.worker_specialization || 'General Maintenance'}</span></td>
+            <td>${w.worker_shift || 'Day (8am - 4pm)'}</td>
+            <td>${w.phone || '—'}</td>
+            <td>${w.email}</td>
+            <td><span class="badge badge-status-submitted">Active Available</span></td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #f87171; padding: 2rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    // Smart Worker Dispatch
+    async function openDispatchModal(complaintId) {
+      activeDispatchComplaintId = complaintId;
+      const comp = masterComplaintsList.find(c => c.id === complaintId);
+      if (!comp) return;
+
+      document.getElementById("dispatch-ticket-info").textContent = `${comp.complaint_code} • ${comp.title} (${comp.category})`;
+      const listEl = document.getElementById("dispatch-suggestions-list");
+      listEl.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 1.5rem;">Calculating trade & shift recommendations...</div>';
+
+      openModal("dispatch-modal");
+
+      try {
+        const suggestions = await apiFetch(`/api/complaints/${complaintId}/dispatch-suggestions`);
+        if (suggestions.length === 0) {
+          listEl.innerHTML = `<div style="text-align:center;padding:1.5rem;color:var(--text-muted);">No staff registered yet. <a href="/admin/staff.html">Create worker accounts here</a>.</div>`;
+          return;
+        }
+
+        listEl.innerHTML = suggestions.map((w, idx) => `
+          <div class="dispatch-card ${idx === 0 && w.match_badge === 'Best Match' ? 'best-match' : ''}">
+            <div>
+              <div style="font-weight:700;color:#ffffff;display:flex;align-items:center;gap:0.5rem;">
+                ${w.full_name}
+                <span class="badge ${w.match_badge === 'Best Match' ? 'badge-low' : 'badge-status-submitted'}">${w.match_badge}</span>
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:2px;">
+                Trade: <strong>${w.specialization}</strong> &bull; Shift: ${w.shift} &bull; Active Jobs: ${w.active_jobs}
+              </div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">Phone: ${w.phone || 'N/A'}</div>
+            </div>
+            <button onclick="executeDispatch(${w.worker_id})" class="btn btn-primary btn-sm">
+              Assign & Notify
+            </button>
+          </div>
+        `).join("");
+      } catch (err) {
+        listEl.innerHTML = `<div style="color:#f87171;padding:1rem;">Failed to load worker matches: ${err.message}</div>`;
+      }
+    }
+
+    async function executeDispatch(workerId) {
+      if (!activeDispatchComplaintId) return;
+
+      try {
+        const res = await apiFetch(`/api/complaints/${activeDispatchComplaintId}/assign`, {
+          method: "POST",
+          body: JSON.stringify({ worker_id: workerId })
+        });
+        showToast(res.message, "success");
+        closeModal("dispatch-modal");
+        loadAdminComplaints();
+        loadStats();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = getUser();
+      if (!user || user.role !== "warden") {
+        window.location.href = "/login.html";
+        return;
+      }
+      renderTopbar();
+      loadStats();
+      loadAdminComplaints();
+    });
+  </script>
+  <script src="/frontend/js/protect.js"></script>
+</body>
+</html>

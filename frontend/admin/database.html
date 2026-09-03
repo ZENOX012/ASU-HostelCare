@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live SQL Database Inspector — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Warden Office</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Command Center</span>
+        </a>
+        <a href="/admin/staff.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Staff & Workers</span>
+        </a>
+        <a href="/admin/gym.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Settings</span>
+        </a>
+        <a href="/admin/reports.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Reports & Export</span>
+        </a>
+        <a href="/admin/database.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <span>Database Inspector</span>
+        </a>
+        <a href="/admin/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Warden Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">Sign Out</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Live SQL Database Inspector</h1>
+          <span class="role-tag role-warden">Warden</span>
+        </div>
+        <div class="topbar-right">
+          <a href="/admin/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Hostel Warden</div>
+              <div id="topbar-user-room" class="user-room">Chief Administrator</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="margin-bottom: 2rem;">
+          <h2 class="gold-text">Relational Table Explorer</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Direct browser-based inspection of operational database schemas, records, and foreign keys. Sensitive credentials are cryptographically masked.
+          </p>
+        </div>
+
+        <!-- Table Selector Pills -->
+        <div id="tables-pill-container" style="display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+          <div style="color: var(--text-muted);">Discovering tables...</div>
+        </div>
+
+        <!-- Selected Table Viewer -->
+        <div class="table-container">
+          <div class="table-header-bar">
+            <div>
+              <span id="active-table-title" style="font-family: monospace; font-size: 1.1rem; color: var(--gold-400); font-weight: 700;">users</span>
+              <span id="active-table-meta" style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.75rem;"></span>
+            </div>
+            <button onclick="refreshActiveTable()" class="btn btn-secondary btn-sm">
+              🔄 Refresh Records
+            </button>
+          </div>
+
+          <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+            <table class="modern-table">
+              <thead id="inspector-thead">
+                <tr><th>Loading schema...</th></tr>
+              </thead>
+              <tbody id="inspector-tbody">
+                <tr><td style="padding: 2rem; text-align: center; color: var(--text-muted);">Selecting table...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script>
+    let currentTable = "users";
+
+    async function loadTableList() {
+      try {
+        const tables = await apiFetch("/api/inspector/tables");
+        const container = document.getElementById("tables-pill-container");
+
+        container.innerHTML = tables.map(t => `
+          <button class="table-pill ${t.table_name === currentTable ? 'active' : ''}" onclick="selectTable('${t.table_name}')">
+            <span>${t.table_name}</span>
+            <span style="font-size:0.75rem;background:rgba(255,255,255,0.1);padding:0.1rem 0.4rem;border-radius:4px;">${t.row_count} rows</span>
+          </button>
+        `).join("");
+
+        selectTable(tables[0]?.table_name || "users");
+      } catch (err) {
+        showToast("Error inspecting tables.", "error");
+      }
+    }
+
+    async function selectTable(tableName) {
+      currentTable = tableName;
+      document.querySelectorAll(".table-pill").forEach(p => {
+        if (p.textContent.includes(tableName)) p.classList.add("active");
+        else p.classList.remove("active");
+      });
+
+      document.getElementById("active-table-title").textContent = tableName;
+      refreshActiveTable();
+    }
+
+    async function refreshActiveTable() {
+      const thead = document.getElementById("inspector-thead");
+      const tbody = document.getElementById("inspector-tbody");
+      const meta = document.getElementById("active-table-meta");
+
+      tbody.innerHTML = `<tr><td style="padding:2rem;text-align:center;color:var(--text-muted);">Loading rows for '${currentTable}'...</td></tr>`;
+
+      try {
+        const data = await apiFetch(`/api/inspector/tables/${currentTable}?limit=100`);
+        meta.textContent = `(Total: ${data.total_rows} records | Columns: ${data.columns.length})`;
+
+        // Render Head
+        thead.innerHTML = `<tr>${data.columns.map(c => `<th>${c}</th>`).join("")}</tr>`;
+
+        // Render Rows
+        if (data.rows.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="${data.columns.length}" style="text-align:center;padding:2rem;color:var(--text-muted);">Table is empty.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = data.rows.map(row => `
+          <tr>
+            ${data.columns.map(col => {
+              let val = row[col];
+              if (val === null || val === undefined) val = `<span style="color:var(--text-muted);font-style:italic;">NULL</span>`;
+              else if (typeof val === "boolean") val = val ? `<span style="color:#4ade80;">TRUE</span>` : `<span style="color:#f87171;">FALSE</span>`;
+              else if (col.includes("photo") && typeof val === "string" && val.startsWith("/")) {
+                val = `<a href="${val}" target="_blank" style="color:var(--gold-400);">${val.slice(0, 25)}...</a>`;
+              }
+              return `<td style="font-family: monospace; font-size: 0.82rem; white-space: nowrap;">${val}</td>`;
+            }).join("")}
+          </tr>
+        `).join("");
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td style="color:#f87171;padding:2rem;text-align:center;">${err.message}</td></tr>`;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTopbar();
+      loadTableList();
+    });
+  </script>
+</body>
+</html>

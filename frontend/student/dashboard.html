@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Student Portal</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/student/dashboard.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>My Complaints</span>
+        </a>
+        <a href="/student/gym.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Schedule</span>
+        </a>
+        <a href="/student/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>My Profile & Photo</span>
+        </a>
+        <a href="/track.html" class="nav-link" target="_blank">
+          <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Public Tracker ↗</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <!-- Topbar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Resident Grievance Center</h1>
+          <span class="role-tag role-student">Student</span>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Notification Bell -->
+          <div class="bell-container">
+            <button id="bell-button" class="bell-btn" title="Notifications">
+              <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="bell-badge" class="bell-badge" style="display: none;">0</span>
+            </button>
+            <div id="bell-dropdown" class="bell-dropdown">
+              <div class="bell-dropdown-header">
+                <span style="font-weight: 700; color: #ffffff;">Alerts</span>
+                <button onclick="markAllNotificationsRead()" style="background:none;border:none;color:var(--gold-400);font-size:0.75rem;cursor:pointer;">Mark all read</button>
+              </div>
+              <div id="bell-notification-list" class="bell-list"></div>
+            </div>
+          </div>
+
+          <!-- Profile Link -->
+          <a href="/student/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Loading...</div>
+              <div id="topbar-user-room" class="user-room">Room —</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <!-- Content Area -->
+      <main class="content-area">
+        <!-- Top Action Bar & KPIs -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <h2 class="gold-text">Welcome back, <span id="student-greeting-name">Student</span></h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Review active maintenance tickets or file a new hostel grievance.</p>
+          </div>
+          <button onclick="openNewComplaintModal()" class="btn btn-primary" style="box-shadow: 0 4px 16px rgba(212, 175, 55, 0.35);">
+            + Lodge New Complaint
+          </button>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-total" class="stat-value">0</span>
+              <span class="stat-label">Total Filed</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #facc15; background: rgba(234, 179, 8, 0.12);">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-active" class="stat-value">0</span>
+              <span class="stat-label">In Progress</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #f472b6; background: rgba(236, 72, 153, 0.12);">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-awaiting" class="stat-value">0</span>
+              <span class="stat-label">Awaiting Confirmation</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #4ade80; background: rgba(34, 197, 94, 0.12);">
+              <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            </div>
+            <div class="stat-info">
+              <span id="kpi-resolved" class="stat-value">0</span>
+              <span class="stat-label">Resolved</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Complaints Table -->
+        <div class="table-container">
+          <div class="table-header-bar">
+            <div class="table-title">My Registered Complaints</div>
+            <div style="display: flex; gap: 0.5rem;">
+              <select id="status-filter-select" class="form-select" onchange="loadStudentComplaints()" style="padding: 0.4rem 0.8rem; font-size: 0.85rem; width: auto;">
+                <option value="">All Statuses</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Assigned">Assigned</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Awaiting Confirmation">Awaiting Confirmation</option>
+                <option value="Resolved">Resolved</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="modern-table">
+              <thead>
+                <tr>
+                  <th>Ticket Code</th>
+                  <th>Category</th>
+                  <th>Title</th>
+                  <th>Priority</th>
+                  <th>Status</th>
+                  <th>Assigned Tradesperson</th>
+                  <th>Filed Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="complaints-table-body">
+                <tr>
+                  <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">Loading complaints...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL 1: Lodge New Complaint (with AI Assistant) -->
+  <div id="new-complaint-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-academic); font-size: 1.15rem; color: var(--gold-400);">Lodge Maintenance Grievance</h3>
+        <button class="modal-close-btn" onclick="closeModal('new-complaint-modal')">&times;</button>
+      </div>
+
+      <form id="new-complaint-form" onsubmit="handleCreateComplaint(event)">
+        <!-- Category & Sub Category -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Category <span class="required">*</span></label>
+            <select id="comp-category" class="form-select" required onchange="updateSubCategories()">
+              <option value="Room">Room & Housekeeping</option>
+              <option value="Water & Electricity">Water & Electricity</option>
+              <option value="Internet">Internet & Wi-Fi</option>
+              <option value="Laundry">Laundry Services</option>
+              <option value="Mess">Mess & Dining</option>
+              <option value="Gym">Gymnasium & Sports</option>
+              <option value="Common Areas">Common Areas & Security</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label">Sub-Problem <span class="required">*</span></label>
+            <select id="comp-subcategory" class="form-select" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="form-group">
+          <label class="form-label">Subject Title <span class="required">*</span></label>
+          <input type="text" id="comp-title" class="form-input" placeholder="e.g. Ceiling fan bearing noise in Room 204" required minlength="4" onblur="triggerAiAssistant()">
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label">Detailed Description <span class="required">*</span></label>
+          <textarea id="comp-desc" class="form-textarea" rows="3" placeholder="Explain the defect, timing, and urgency..." required minlength="10" onblur="triggerAiAssistant()"></textarea>
+        </div>
+
+        <!-- AI Assistant Suggestion Box -->
+        <div id="ai-suggestion-box" class="ai-assistant-card" style="display: none;">
+          <div style="font-weight: 700; color: var(--gold-400); margin-bottom: 0.25rem;">🤖 AI Smart Dispatch Assistant</div>
+          <div id="ai-priority-text" style="color: var(--text-primary);"></div>
+          <div id="ai-duplicates-container"></div>
+        </div>
+
+        <!-- Priority Selector (Can be auto-filled by AI) -->
+        <div class="form-group">
+          <label class="form-label">Priority Level</label>
+          <select id="comp-priority" class="form-select">
+            <option value="Low">Low (Non-urgent / Aesthetic)</option>
+            <option value="Medium" selected>Medium (Standard Turnaround)</option>
+            <option value="High">High (Impacting Daily Routine)</option>
+            <option value="Emergency">Emergency (Safety Hazard / Flood / Spark)</option>
+          </select>
+        </div>
+
+        <!-- Evidence Photo Attachment -->
+        <div class="form-group">
+          <label class="form-label">Attach Photo Evidence (Optional)</label>
+          <input type="file" id="comp-evidence-file" class="form-input" accept="image/jpeg,image/png,image/webp">
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Max 5MB (JPG, PNG, WEBP). Verified for safety.</span>
+        </div>
+
+        <button type="submit" id="create-comp-btn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Submit Complaint
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Student Confirmation Modal (When Worker Completes Job) -->
+  <div id="confirm-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-academic); font-size: 1.15rem; color: var(--gold-400);">Confirm Job Resolution</h3>
+        <button class="modal-close-btn" onclick="closeModal('confirm-modal')">&times;</button>
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          The assigned tradesperson has submitted completion proof. Inspect their geo-tagged proof photo below and confirm if the work was completed satisfactorily.
+        </p>
+      </div>
+
+      <!-- Worker Proof Details -->
+      <div style="background: rgba(9, 18, 32, 0.7); border: 1px solid var(--card-border); border-radius: 6px; padding: 1rem; margin-bottom: 1.25rem;">
+        <div id="confirm-worker-name" style="font-weight: 600; color: #ffffff; margin-bottom: 0.25rem;">Tradesperson: —</div>
+        <div id="confirm-worker-notes" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.75rem;">Remarks: —</div>
+        <div id="confirm-proof-box" style="margin-bottom: 0.75rem;"></div>
+        <div id="confirm-gps-box"></div>
+      </div>
+
+      <!-- Resolution Confirmation Form -->
+      <form id="confirm-resolution-form" onsubmit="handleConfirmResolution(event, true)">
+        <div class="form-group">
+          <label class="form-label">Rate Tradesperson Performance</label>
+          <div class="star-rating" id="star-picker">
+            <span class="star" data-rating="1" onclick="setStarRating(1)">★</span>
+            <span class="star" data-rating="2" onclick="setStarRating(2)">★</span>
+            <span class="star" data-rating="3" onclick="setStarRating(3)">★</span>
+            <span class="star" data-rating="4" onclick="setStarRating(4)">★</span>
+            <span class="star selected" data-rating="5" onclick="setStarRating(5)">★</span>
+          </div>
+          <input type="hidden" id="star-rating-val" value="5">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Student Feedback (Optional)</label>
+          <input type="text" id="confirm-feedback" class="form-input" placeholder="e.g. Fixed cleanly and tested on time.">
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+          <button type="submit" class="btn btn-primary" style="flex: 2;">
+            ✓ Confirm Resolution & Close Ticket
+          </button>
+          <button type="button" onclick="handleConfirmResolution(event, false)" class="btn btn-oxblood" style="flex: 1;">
+            ✕ Dispute / Reopen
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Audit Timeline Modal -->
+  <div id="timeline-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="timeline-modal-code" style="font-family: monospace; color: var(--gold-400);">Ticket Timeline</h3>
+        <button class="modal-close-btn" onclick="closeModal('timeline-modal')">&times;</button>
+      </div>
+      <div id="timeline-modal-body" class="timeline-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script src="/frontend/js/notifications.js"></script>
+  <script>
+    const SUB_CATEGORY_MAP = {
+      "Room": ["Fan / Regulator Not Working", "Light / Bulb Fuse", "Door Lock / Handle Broken", "Window Glass / Mesh Damaged", "Bed / Table / Chair Broken", "Room Pest Control", "Wall Paint / Plaster Peeling"],
+      "Water & Electricity": ["Water Supply Stopped", "Geyser Not Heating", "Tap / Shower Dripping", "Toilet Flush Choked", "Drain Blockage & Stench", "Power Socket Burning / Sparking", "Main Switch Tripping"],
+      "Internet": ["Wi-Fi SSID Not Visible", "Connected but No Internet", "Extremely Low Bandwidth", "LAN Port Damaged", "Portal Login Page Not Loading"],
+      "Laundry": ["Washing Machine Error / Stalled", "Dryer Not Heating", "Water Overflow in Laundry Area", "Coin / Card Dispenser Jammed"],
+      "Mess": ["Food Hygiene / Contamination Concern", "Drinking Water Cooler Filter Issue", "Utensils Not Clean", "Special Dietary / Medical Request", "Mess Hall AC / Fan Issue"],
+      "Gym": ["Treadmill Belt Slipping / Broken", "Cable Machine Snapped", "Dumbbell Rack Disrepair", "AC / Ventilation Failure", "Sanitizer Dispenser Empty"],
+      "Common Areas": ["Corridor Light Out", "Lift / Elevator Stuck", "Water Dispenser Leak", "Staircase Cleanliness", "Noise Complaint after Quiet Hours"]
+    };
+
+    let activeConfirmComplaintId = null;
+    let currentComplaintsList = [];
+
+    function updateSubCategories() {
+      const cat = document.getElementById("comp-category").value;
+      const subSelect = document.getElementById("comp-subcategory");
+      const list = SUB_CATEGORY_MAP[cat] || ["General Issue"];
+      subSelect.innerHTML = list.map(item => `<option value="${item}">${item}</option>`).join("");
+    }
+
+    async function triggerAiAssistant() {
+      const category = document.getElementById("comp-category").value;
+      const sub_category = document.getElementById("comp-subcategory").value;
+      const title = document.getElementById("comp-title").value.trim();
+      const description = document.getElementById("comp-desc").value.trim();
+
+      if (title.length < 4 && description.length < 10) return;
+
+      try {
+        const res = await apiFetch("/api/complaints/ai-analyze", {
+          method: "POST",
+          body: JSON.stringify({ category, sub_category, title, description })
+        });
+
+        const box = document.getElementById("ai-suggestion-box");
+        const priorityText = document.getElementById("ai-priority-text");
+        const dupsContainer = document.getElementById("ai-duplicates-container");
+
+        if (res.prediction) {
+          box.style.display = "block";
+          priorityText.innerHTML = `
+            Suggested Urgency: <strong>${res.prediction.priority}</strong> (Confidence: ${res.prediction.confidence})<br>
+            <span style="color:var(--text-secondary);font-size:0.8rem;">${res.prediction.reason}</span>
+          `;
+
+          // Auto-sync priority select if not manually changed to emergency
+          const prioritySelect = document.getElementById("comp-priority");
+          if (prioritySelect) {
+            prioritySelect.value = res.prediction.priority;
+          }
+        }
+
+        if (res.duplicates && res.duplicates.length > 0) {
+          dupsContainer.innerHTML = `
+            <div class="duplicate-alert">
+              <strong>⚠️ Potential Duplicate Alert:</strong><br>
+              ${res.duplicates.map(d => `• Similar ticket <strong>${d.complaint_code}</strong> (${d.status}) in Block ${d.block} [${d.similarity_score} match]`).join("<br>")}
+            </div>
+          `;
+        } else {
+          dupsContainer.innerHTML = "";
+        }
+      } catch (e) {}
+    }
+
+    function openNewComplaintModal() {
+      updateSubCategories();
+      document.getElementById("new-complaint-form").reset();
+      document.getElementById("ai-suggestion-box").style.display = "none";
+      openModal("new-complaint-modal");
+    }
+
+    async function handleCreateComplaint(e) {
+      e.preventDefault();
+      const btn = document.getElementById("create-comp-btn");
+      btn.disabled = true;
+      btn.textContent = "Submitting Grievance...";
+
+      try {
+        const category = document.getElementById("comp-category").value;
+        const sub_category = document.getElementById("comp-subcategory").value;
+        const title = document.getElementById("comp-title").value.trim();
+        const description = document.getElementById("comp-desc").value.trim();
+        const priority = document.getElementById("comp-priority").value;
+        const fileInput = document.getElementById("comp-evidence-file");
+
+        let evidence_photo = null;
+        if (fileInput.files && fileInput.files[0]) {
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+          const uploadRes = await apiFetch("/api/complaints/upload-evidence", {
+            method: "POST",
+            body: formData
+          });
+          evidence_photo = uploadRes.url;
+        }
+
+        const payload = { category, sub_category, title, description, priority, evidence_photo };
+        const newComp = await apiFetch("/api/complaints", {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        showToast(`Complaint filed! Reference Code: ${newComp.complaint_code}`, "success");
+        closeModal("new-complaint-modal");
+        loadStudentComplaints();
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Submit Complaint";
+      }
+    }
+
+    async function loadStudentComplaints() {
+      const statusFilter = document.getElementById("status-filter-select").value;
+      const tbody = document.getElementById("complaints-table-body");
+
+      try {
+        let endpoint = "/api/complaints";
+        if (statusFilter) endpoint += `?status_filter=${encodeURIComponent(statusFilter)}`;
+
+        const complaints = await apiFetch(endpoint);
+        currentComplaintsList = complaints;
+
+        // Update KPI counts
+        let total = complaints.length;
+        let active = complaints.filter(c => ["Assigned", "In Progress"].includes(c.status)).length;
+        let awaiting = complaints.filter(c => c.status === "Awaiting Confirmation").length;
+        let resolved = complaints.filter(c => c.status === "Resolved").length;
+
+        document.getElementById("kpi-total").textContent = total;
+        document.getElementById("kpi-active").textContent = active;
+        document.getElementById("kpi-awaiting").textContent = awaiting;
+        document.getElementById("kpi-resolved").textContent = resolved;
+
+        if (complaints.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--text-muted);padding:2rem;">No complaints found for this filter.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = complaints.map(c => {
+          let workerStr = "Pending Assignment";
+          if (c.worker) {
+            workerStr = `${c.worker.full_name} (${c.worker.worker_specialization || "Staff"})`;
+          }
+
+          let actionBtn = "";
+          if (c.status === "Awaiting Confirmation") {
+            actionBtn = `<button onclick="openConfirmModal(${c.id})" class="btn btn-oxblood btn-sm" style="animation: pulseGold 2s infinite;">Confirm Resolution</button>`;
+          } else {
+            actionBtn = `<button onclick="openTimelineModal(${c.id})" class="btn btn-secondary btn-sm">Audit Log</button>`;
+          }
+
+          return `
+            <tr>
+              <td><a href="/track.html?code=${c.complaint_code}" target="_blank" style="font-family:monospace;font-weight:700;">${c.complaint_code}</a></td>
+              <td>${c.category}</td>
+              <td style="font-weight:600;">${c.title}</td>
+              <td>${getPriorityBadge(c.priority)}</td>
+              <td>${getStatusBadge(c.status)}</td>
+              <td>${workerStr}</td>
+              <td>${formatDate(c.created_at)}</td>
+              <td>${actionBtn}</td>
+            </tr>
+          `;
+        }).join("");
+
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#f87171;padding:2rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    function openConfirmModal(complaintId) {
+      activeConfirmComplaintId = complaintId;
+      const complaint = currentComplaintsList.find(c => c.id === complaintId);
+      if (!complaint) return;
+
+      document.getElementById("confirm-worker-name").textContent = `Tradesperson: ${complaint.worker ? complaint.worker.full_name : 'Staff'}`;
+      document.getElementById("confirm-worker-notes").textContent = `Staff Remarks: "${complaint.completion_notes || 'Task completed satisfactorily.'}"`;
+
+      const proofBox = document.getElementById("confirm-proof-box");
+      if (complaint.completion_photo) {
+        proofBox.innerHTML = `
+          <a href="${complaint.completion_photo}" target="_blank">
+            <img src="${complaint.completion_photo}" alt="Proof" style="width:100%;max-height:220px;object-fit:cover;border-radius:6px;">
+          </a>
+        `;
+      } else {
+        proofBox.innerHTML = `<span style="color:var(--text-muted);">No photo proof attached.</span>`;
+      }
+
+      const gpsBox = document.getElementById("confirm-gps-box");
+      if (complaint.completion_lat && complaint.completion_lng) {
+        gpsBox.innerHTML = `
+          <span class="gps-pill">📍 GPS Tag: ${complaint.completion_lat.toFixed(5)}°, ${complaint.completion_lng.toFixed(5)}°</span>
+        `;
+      } else {
+        gpsBox.innerHTML = "";
+      }
+
+      setStarRating(5);
+      openModal("confirm-modal");
+    }
+
+    function setStarRating(val) {
+      document.getElementById("star-rating-val").value = val;
+      const stars = document.querySelectorAll("#star-picker .star");
+      stars.forEach((s, idx) => {
+        if (idx < val) s.classList.add("selected");
+        else s.classList.remove("selected");
+      });
+    }
+
+    async function handleConfirmResolution(e, isConfirmed) {
+      e.preventDefault();
+      if (!activeConfirmComplaintId) return;
+
+      const rating = parseInt(document.getElementById("star-rating-val").value) || 5;
+      const feedback = document.getElementById("confirm-feedback").value.trim();
+
+      try {
+        const res = await apiFetch(`/api/complaints/${activeConfirmComplaintId}/confirm`, {
+          method: "POST",
+          body: JSON.stringify({
+            is_confirmed: isConfirmed,
+            student_rating: isConfirmed ? rating : null,
+            student_feedback: feedback || null
+          })
+        });
+
+        showToast(res.message, "success");
+        closeModal("confirm-modal");
+        loadStudentComplaints();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    function openTimelineModal(complaintId) {
+      const complaint = currentComplaintsList.find(c => c.id === complaintId);
+      if (!complaint) return;
+
+      document.getElementById("timeline-modal-code").textContent = `Audit Log — ${complaint.complaint_code}`;
+      const body = document.getElementById("timeline-modal-body");
+
+      body.innerHTML = (complaint.timeline || []).map(tl => `
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-header">
+            <div class="timeline-title">${tl.status}</div>
+            <div class="timeline-time">${formatDate(tl.created_at)}</div>
+          </div>
+          <div class="timeline-body">
+            <strong>${tl.action_by_name || 'System'}:</strong> ${tl.notes || 'Status record logged.'}
+          </div>
+        </div>
+      `).join("");
+
+      openModal("timeline-modal");
+    }
+
+    // Initialize page
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = getUser();
+      if (!user) {
+        window.location.href = "/login.html";
+        return;
+      }
+      if (user.role !== "student" && user.role !== "warden") {
+        redirectByRole(user.role);
+        return;
+      }
+
+      document.getElementById("student-greeting-name").textContent = user.full_name;
+      renderTopbar();
+      loadStudentComplaints();
+    });
+  </script>
+</body>
+</html>

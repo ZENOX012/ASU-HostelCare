@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Staff Directory & Password Governance — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Warden Office</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Command Center</span>
+        </a>
+        <a href="/admin/staff.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Staff & Workers</span>
+        </a>
+        <a href="/admin/gym.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Settings</span>
+        </a>
+        <a href="/admin/reports.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Reports & Export</span>
+        </a>
+        <a href="/admin/database.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <span>Database Inspector</span>
+        </a>
+        <a href="/admin/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Warden Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Staff Administration & Credential Authority</h1>
+          <span class="role-tag role-warden">Warden</span>
+        </div>
+        <div class="topbar-right">
+          <a href="/admin/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Hostel Warden</div>
+              <div id="topbar-user-room" class="user-room">Chief Administrator</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <h2 class="gold-text">Personnel & Security Management</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+              Enlist university tradespersons, configure shifts, and execute administrative password overrides.
+            </p>
+          </div>
+          <button onclick="openModal('add-worker-modal')" class="btn btn-primary">
+            + Enlist New Tradesperson
+          </button>
+        </div>
+
+        <!-- 2 Column Section: Staff Directory & Password Reset Tool -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+          
+          <!-- Column 1: Staff Directory Table -->
+          <div>
+            <div class="table-container" style="margin-top: 0;">
+              <div class="table-header-bar">
+                <div class="table-title">Active University Staff & Maintenance Trades</div>
+              </div>
+              <div class="table-responsive">
+                <table class="modern-table">
+                  <thead>
+                    <tr>
+                      <th>Staff Member</th>
+                      <th>Trade Specialization</th>
+                      <th>Assigned Shift</th>
+                      <th>Official Contact</th>
+                      <th>Account Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="workers-tbody">
+                    <tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading tradespersons...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Column 2: Universal Password Reset Tool (Warden Only) -->
+          <div>
+            <div class="academic-panel" style="border-left: 3px solid var(--gold-500);">
+              <h3 style="color: var(--gold-400); margin-bottom: 0.5rem; font-size: 1.2rem;">🔑 Credential Override Tool</h3>
+              <p style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+                Authorized Hostel Warden function to reset credentials for any resident student or maintenance worker.
+              </p>
+
+              <form id="warden-reset-pwd-form" onsubmit="handleWardenPasswordReset(event)">
+                <div class="form-group">
+                  <label class="form-label" for="reset-target-user">Select Account <span class="required">*</span></label>
+                  <select id="reset-target-user" class="form-select" required>
+                    <option value="" disabled selected>Loading directory...</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="reset-new-pwd">New Assigned Password <span class="required">*</span></label>
+                  <div class="password-wrapper">
+                    <input type="password" id="reset-new-pwd" class="form-input" placeholder="Enter new password" required minlength="6">
+                    <button type="button" class="eye-toggle-btn" data-target="reset-new-pwd" title="Show password">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+
+                <button type="submit" id="reset-pwd-btn" class="btn btn-oxblood btn-block" style="margin-top: 1.25rem;">
+                  Override & Reset Password
+                </button>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL: Enlist New Staff / Tradesperson -->
+  <div id="add-worker-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-academic); font-size: 1.15rem; color: var(--gold-400);">Enlist Campus Maintenance Staff</h3>
+        <button class="modal-close-btn" onclick="closeModal('add-worker-modal')">&times;</button>
+      </div>
+
+      <form id="create-worker-form" onsubmit="handleCreateWorker(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name <span class="required">*</span></label>
+          <input type="text" id="w-name" class="form-input" placeholder="e.g. Mukesh Sen" required minlength="2">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Official Email <span class="required">*</span></label>
+            <input type="email" id="w-email" class="form-input" placeholder="trade@asu.edu" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Contact Phone <span class="required">*</span></label>
+            <input type="tel" id="w-phone" class="form-input" placeholder="+91 98765 00002" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Trade Specialization <span class="required">*</span></label>
+            <select id="w-spec" class="form-select" required>
+              <option value="Electrician">Electrician (Water & Electricity)</option>
+              <option value="Plumber">Plumber (Water & Sanitary)</option>
+              <option value="Room Cleaning">Room Cleaning & Housekeeping</option>
+              <option value="IT">IT & Network Technician</option>
+              <option value="Gym Tech">Gym Tech & Fitness Equipment</option>
+              <option value="Laundry">Laundry Technician</option>
+              <option value="Mess">Mess & Culinary Maintenance</option>
+              <option value="Maintenance">General Maintenance</option>
+              <option value="Security">Hostel Security Operations</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Duty Shift <span class="required">*</span></label>
+            <select id="w-shift" class="form-select" required>
+              <option value="Day">Day Shift (08:00 AM – 06:00 PM)</option>
+              <option value="Night">Night Shift (06:00 PM – 04:00 AM)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Initial Password with Eye Toggle -->
+        <div class="form-group">
+          <label class="form-label">Initial Account Password <span class="required">*</span></label>
+          <div class="password-wrapper">
+            <input type="password" id="w-password" class="form-input" placeholder="Set temporary password" required minlength="6">
+            <button type="button" class="eye-toggle-btn" data-target="w-password" title="Show password">
+              <svg viewBox="0 0 24 24">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="w-submit-btn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Create Staff Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script src="/frontend/js/auth.js"></script>
+  <script>
+    async function loadWorkers() {
+      const tbody = document.getElementById("workers-tbody");
+      try {
+        const workers = await apiFetch("/api/users/workers");
+        if (workers.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No workers created yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = workers.map(w => `
+          <tr>
+            <td>
+              <div style="font-weight:600;color:#ffffff;">${w.full_name}</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);">${w.email}</div>
+            </td>
+            <td><span class="badge badge-status-assigned">${w.worker_specialization || 'General'}</span></td>
+            <td>${w.worker_shift || 'Day'} Shift</td>
+            <td>${w.phone || '—'}</td>
+            <td><span class="badge badge-low">Active Staff</span></td>
+          </tr>
+        `).join("");
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" style="color:#f87171;text-align:center;padding:2rem;">${err.message}</td></tr>`;
+      }
+    }
+
+    async function loadAllUsersDropdown() {
+      const select = document.getElementById("reset-target-user");
+      try {
+        const users = await apiFetch("/api/users/all");
+        select.innerHTML = '<option value="" disabled selected>Select User (Student / Worker / Warden)</option>' + 
+          users.map(u => `
+            <option value="${u.id}">
+              [${u.role.toUpperCase()}] ${u.full_name} (${u.email})
+            </option>
+          `).join("");
+      } catch (err) {
+        select.innerHTML = '<option disabled>Error loading directory</option>';
+      }
+    }
+
+    async function handleCreateWorker(e) {
+      e.preventDefault();
+      const btn = document.getElementById("w-submit-btn");
+      btn.disabled = true;
+      btn.textContent = "Creating Account...";
+
+      try {
+        const full_name = document.getElementById("w-name").value.trim();
+        const email = document.getElementById("w-email").value.trim();
+        const phone = document.getElementById("w-phone").value.trim();
+        const worker_specialization = document.getElementById("w-spec").value;
+        const worker_shift = document.getElementById("w-shift").value;
+        const password = document.getElementById("w-password").value;
+
+        const res = await apiFetch("/api/users/workers", {
+          method: "POST",
+          body: JSON.stringify({ full_name, email, phone, worker_specialization, worker_shift, password })
+        });
+
+        showToast(`Staff account for ${res.full_name} created successfully!`, "success");
+        closeModal("add-worker-modal");
+        document.getElementById("create-worker-form").reset();
+        loadWorkers();
+        loadAllUsersDropdown();
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Create Staff Account";
+      }
+    }
+
+    async function handleWardenPasswordReset(e) {
+      e.preventDefault();
+      const user_id = parseInt(document.getElementById("reset-target-user").value);
+      const new_password = document.getElementById("reset-new-pwd").value;
+      const btn = document.getElementById("reset-pwd-btn");
+
+      if (!user_id) {
+        showToast("Please select a target user.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Updating Password...";
+
+      try {
+        const res = await apiFetch("/api/users/reset-password", {
+          method: "POST",
+          body: JSON.stringify({ user_id, new_password })
+        });
+
+        showToast(res.message, "success");
+        document.getElementById("reset-new-pwd").value = "";
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Override & Reset Password";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTopbar();
+      loadWorkers();
+      loadAllUsersDropdown();
+      setupPasswordToggles();
+    });
+  </script>
+</body>
+</html>

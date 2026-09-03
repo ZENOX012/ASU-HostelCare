@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Gymnasium & Fitness — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Student Portal</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/student/dashboard.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>My Complaints</span>
+        </a>
+        <a href="/student/gym.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Schedule</span>
+        </a>
+        <a href="/student/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>My Profile & Photo</span>
+        </a>
+        <a href="/track.html" class="nav-link" target="_blank">
+          <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Public Tracker ↗</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">
+          Sign Out
+        </button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">University Gymnasium Guidelines</h1>
+          <span class="role-tag role-student">Resident Access</span>
+        </div>
+        <div class="topbar-right">
+          <a href="/student/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Loading...</div>
+              <div id="topbar-user-room" class="user-room">Room —</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <h2 class="gold-text">Campus Health & Athletic Center</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+              Operational timings, equipment inventory, and facility safety regulations.
+            </p>
+          </div>
+          <button onclick="openGymReportModal()" class="btn btn-oxblood" style="box-shadow: 0 4px 16px rgba(92, 20, 33, 0.4);">
+            ⚠️ Report a Gym Defect
+          </button>
+        </div>
+
+        <div class="stats-grid">
+          <div class="academic-panel">
+            <h4 style="color: var(--gold-400); margin-bottom: 0.5rem;">🌅 Morning Session</h4>
+            <div id="gym-morning" style="font-size: 1.25rem; font-weight: 700; color: #ffffff;">Loading...</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Dedicated cardio and strength training hours</p>
+          </div>
+
+          <div class="academic-panel">
+            <h4 style="color: var(--gold-400); margin-bottom: 0.5rem;">🌆 Evening Session</h4>
+            <div id="gym-evening" style="font-size: 1.25rem; font-weight: 700; color: #ffffff;">Loading...</div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Peak hours with certified trainer assistance</p>
+          </div>
+
+          <div class="academic-panel">
+            <h4 style="color: var(--gold-400); margin-bottom: 0.5rem;">🏋️ Resident Strength Coach</h4>
+            <div id="gym-trainer" style="font-size: 1.1rem; font-weight: 700; color: #ffffff;">Loading...</div>
+            <p id="gym-contact" style="font-size: 0.85rem; color: var(--gold-300); margin-top: 0.25rem;">Contact: —</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1rem;">
+          <!-- Facilities Card -->
+          <div class="academic-panel">
+            <h3 style="color: var(--gold-400); margin-bottom: 1rem;">Active Facilities & Equipment</h3>
+            <ul id="gym-facilities-list" style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.25rem; line-height: 2;">
+              <li>Loading equipment...</li>
+            </ul>
+          </div>
+
+          <!-- Rules Card -->
+          <div class="academic-panel">
+            <h3 style="color: var(--gold-400); margin-bottom: 1rem;">Facility Regulations & Etiquette</h3>
+            <ul id="gym-rules-list" style="color: var(--text-secondary); font-size: 0.9rem; padding-left: 1.25rem; line-height: 2;">
+              <li>Loading regulations...</li>
+            </ul>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Quick Gym Defect Modal -->
+  <div id="gym-report-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-family: var(--font-academic); font-size: 1.15rem; color: var(--gold-400);">Report Gym Equipment Issue</h3>
+        <button class="modal-close-btn" onclick="closeModal('gym-report-modal')">&times;</button>
+      </div>
+
+      <form id="gym-defect-form" onsubmit="handleGymReportSubmit(event)">
+        <div class="form-group">
+          <label class="form-label">Sub-Problem <span class="required">*</span></label>
+          <select id="gym-sub" class="form-select" required>
+            <option value="Treadmill Belt Slipping / Broken">Treadmill Belt Slipping / Broken</option>
+            <option value="Cable Machine Snapped">Cable Machine Snapped</option>
+            <option value="Dumbbell Rack Disrepair">Dumbbell Rack Disrepair</option>
+            <option value="AC / Ventilation Failure">AC / Ventilation Failure</option>
+            <option value="Sanitizer Dispenser Empty">Sanitizer Dispenser Empty</option>
+            <option value="Other Gym Defect">Other Gym Defect</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Subject Title <span class="required">*</span></label>
+          <input type="text" id="gym-title" class="form-input" placeholder="e.g. Broken pulley on Lat Pulldown Station" required minlength="4">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Defect Description <span class="required">*</span></label>
+          <textarea id="gym-desc" class="form-textarea" rows="3" placeholder="Provide machine number or exact location in the fitness center..." required minlength="10"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Submit Gym Defect Ticket
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script>
+    async function loadGymInfo() {
+      try {
+        const gym = await apiFetch("/api/gym");
+        document.getElementById("gym-morning").textContent = gym.morning_timings || "06:00 AM – 09:30 AM";
+        document.getElementById("gym-evening").textContent = gym.evening_timings || "05:00 PM – 10:00 PM";
+        document.getElementById("gym-trainer").textContent = gym.trainer_name || "Vikramaditya Rao";
+        document.getElementById("gym-contact").textContent = `Direct Line: ${gym.trainer_contact || "Ext. 402"}`;
+
+        const facList = document.getElementById("gym-facilities-list");
+        facList.innerHTML = (gym.facilities || []).map(f => `<li>${f}</li>`).join("");
+
+        const rulesList = document.getElementById("gym-rules-list");
+        rulesList.innerHTML = (gym.rules || []).map(r => `<li>${r}</li>`).join("");
+      } catch (err) {
+        showToast("Could not load gym details.", "error");
+      }
+    }
+
+    function openGymReportModal() {
+      document.getElementById("gym-defect-form").reset();
+      openModal("gym-report-modal");
+    }
+
+    async function handleGymReportSubmit(e) {
+      e.preventDefault();
+      const sub_category = document.getElementById("gym-sub").value;
+      const title = document.getElementById("gym-title").value.trim();
+      const description = document.getElementById("gym-desc").value.trim();
+
+      try {
+        const res = await apiFetch("/api/complaints", {
+          method: "POST",
+          body: JSON.stringify({
+            category: "Gym",
+            sub_category,
+            title,
+            description,
+            priority: "Medium"
+          })
+        });
+
+        showToast(`Gym grievance logged: ${res.complaint_code}`, "success");
+        closeModal("gym-report-modal");
+        setTimeout(() => { window.location.href = "/student/dashboard.html"; }, 800);
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTopbar();
+      loadGymInfo();
+    });
+  </script>
+</body>
+</html>

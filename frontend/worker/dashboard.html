@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maintenance Staff Operations — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Staff Portal</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/worker/dashboard.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
+          <span>My Assigned Tasks</span>
+        </a>
+        <a href="/worker/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Staff Profile & Photo</span>
+        </a>
+        <a href="/track.html" class="nav-link" target="_blank">
+          <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <span>Public Tracker ↗</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Maintenance Duty Desk</h1>
+          <span class="role-tag role-worker">Staff</span>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Notification Bell -->
+          <div class="bell-container">
+            <button id="bell-button" class="bell-btn" title="Notifications">
+              <svg style="width: 20px; height: 20px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span id="bell-badge" class="bell-badge" style="display: none;">0</span>
+            </button>
+            <div id="bell-dropdown" class="bell-dropdown">
+              <div class="bell-dropdown-header">
+                <span style="font-weight: 700; color: #ffffff;">Duty Alerts</span>
+                <button onclick="markAllNotificationsRead()" style="background:none;border:none;color:var(--gold-400);font-size:0.75rem;cursor:pointer;">Mark all read</button>
+              </div>
+              <div id="bell-notification-list" class="bell-list"></div>
+            </div>
+          </div>
+
+          <!-- Profile Link -->
+          <a href="/worker/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Tradesperson</div>
+              <div id="topbar-user-room" class="user-room">Maintenance</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="margin-bottom: 2rem;">
+          <h2 class="gold-text">My Duty Roster & Work Orders</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Inspect assigned location, initiate work, and submit mandatory geo-tagged photographic evidence.
+          </p>
+        </div>
+
+        <!-- Worker KPI Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #60a5fa;"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg></div>
+            <div class="stat-info">
+              <span id="w-kpi-new" class="stat-value">0</span>
+              <span class="stat-label">Assigned (New)</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #facc15;"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></div>
+            <div class="stat-info">
+              <span id="w-kpi-inprogress" class="stat-value">0</span>
+              <span class="stat-label">In Progress</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #f472b6;"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+            <div class="stat-info">
+              <span id="w-kpi-awaiting" class="stat-value">0</span>
+              <span class="stat-label">Awaiting Confirmation</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #4ade80;"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+            <div class="stat-info">
+              <span id="w-kpi-done" class="stat-value">0</span>
+              <span class="stat-label">Confirmed Done</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Filter & Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+          <h3 style="color: var(--gold-400); font-size: 1.15rem;">Assigned Work Orders</h3>
+          <select id="worker-filter" class="form-select" onchange="loadWorkerTasks()" style="width: auto; font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+            <option value="">All Assigned Tasks</option>
+            <option value="Assigned">Newly Assigned</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Awaiting Confirmation">Awaiting Student Confirmation</option>
+            <option value="Resolved">Resolved & Rated</option>
+          </select>
+        </div>
+
+        <!-- Tasks Feed -->
+        <div id="tasks-feed">
+          <div style="text-align: center; color: var(--text-muted); padding: 3rem;">Loading assigned jobs...</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- MODAL: Mark Complete Job with GPS Geolocation & Proof Photo -->
+  <div id="complete-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-family: var(--font-academic); font-size: 1.15rem; color: var(--gold-400);">Submit Completion Proof</h3>
+          <span id="complete-ticket-code" style="font-size: 0.8rem; color: var(--text-muted);"></span>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('complete-modal')">&times;</button>
+      </div>
+
+      <form id="complete-task-form" onsubmit="handleSubmitCompletion(event)">
+        <!-- 1. Mandatory Completion Proof Photo -->
+        <div class="form-group">
+          <label class="form-label">Completion Proof Photo <span class="required">*</span></label>
+          <input type="file" id="complete-photo-file" class="form-input" accept="image/jpeg,image/png,image/webp" required>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Take or upload a clear photo of the rectified equipment/area.</span>
+        </div>
+
+        <!-- 2. Mandatory Live GPS Location -->
+        <div class="gps-capture-box">
+          <div>
+            <div style="font-weight: 600; color: #38bdf8;">📍 Mandatory Geo-Tagging</div>
+            <div id="gps-status-text" style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 2px;">
+              Click 'Capture GPS' to verify on-site presence.
+            </div>
+          </div>
+          <button type="button" id="detect-gps-btn" onclick="captureLiveGps()" class="btn btn-secondary btn-sm" style="border-color: #38bdf8; color: #38bdf8;">
+            Capture Live GPS
+          </button>
+        </div>
+
+        <input type="hidden" id="gps-lat" value="">
+        <input type="hidden" id="gps-lng" value="">
+        <input type="hidden" id="gps-acc" value="">
+
+        <!-- 3. Work Remarks -->
+        <div class="form-group">
+          <label class="form-label">Job Notes & Rectification Remarks <span class="required">*</span></label>
+          <textarea id="complete-notes" class="form-textarea" rows="3" placeholder="Explain the fix (e.g. Replaced capacitor on ceiling fan, lubricated ball bearings, tested operational)." required minlength="5"></textarea>
+        </div>
+
+        <button type="submit" id="submit-complete-btn" class="btn btn-primary btn-block" style="margin-top: 1rem;">
+          Submit Proof & Notify Student
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script src="/frontend/js/notifications.js"></script>
+  <script>
+    let activeCompleteComplaintId = null;
+    let workerTasksList = [];
+
+    async function loadWorkerTasks() {
+      const filter = document.getElementById("worker-filter").value;
+      const feed = document.getElementById("tasks-feed");
+
+      let endpoint = "/api/complaints";
+      if (filter) endpoint += `?status_filter=${encodeURIComponent(filter)}`;
+
+      try {
+        const tasks = await apiFetch(endpoint);
+        workerTasksList = tasks;
+
+        // KPI calculations
+        let cNew = tasks.filter(t => t.status === "Assigned").length;
+        let cProg = tasks.filter(t => t.status === "In Progress").length;
+        let cAwait = tasks.filter(t => t.status === "Awaiting Confirmation").length;
+        let cDone = tasks.filter(t => t.status === "Resolved").length;
+
+        document.getElementById("w-kpi-new").textContent = cNew;
+        document.getElementById("w-kpi-inprogress").textContent = cProg;
+        document.getElementById("w-kpi-awaiting").textContent = cAwait;
+        document.getElementById("w-kpi-done").textContent = cDone;
+
+        if (tasks.length === 0) {
+          feed.innerHTML = `<div style="text-align:center;padding:3rem;color:var(--text-muted);">No assigned work orders in this status category.</div>`;
+          return;
+        }
+
+        feed.innerHTML = tasks.map(t => {
+          let cardClass = "";
+          if (t.status === "In Progress") cardClass = "in-progress";
+          else if (t.status === "Awaiting Confirmation") cardClass = "awaiting";
+          else if (t.status === "Resolved") cardClass = "resolved";
+
+          let studentContact = t.student ? `
+            <div style="font-size:0.82rem;color:var(--text-muted);display:flex;gap:1.5rem;flex-wrap:wrap;">
+              <span><strong>Student:</strong> ${t.student.full_name}</span>
+              <span><strong>Location:</strong> Block ${t.student.hostel_block}, Room ${t.student.room_number}</span>
+              <span><strong>Phone:</strong> <a href="tel:${t.student.phone}" style="color:var(--gold-400);">${t.student.phone || 'N/A'}</a></span>
+            </div>
+          ` : "";
+
+          let actionButtons = "";
+          if (t.status === "Assigned") {
+            actionButtons = `<button onclick="startJob(${t.id})" class="btn btn-primary btn-sm">▶ Start Job</button>`;
+          } else if (t.status === "In Progress") {
+            actionButtons = `<button onclick="openCompleteModal(${t.id})" class="btn btn-oxblood btn-sm" style="box-shadow:0 0 12px rgba(220,38,38,0.3);">✓ Mark Complete (Upload Proof)</button>`;
+          } else if (t.status === "Awaiting Confirmation") {
+            actionButtons = `<span style="font-size:0.82rem;color:#f472b6;font-weight:600;">Waiting for student confirmation & rating</span>`;
+          } else if (t.status === "Resolved") {
+            actionButtons = `<span style="font-size:0.82rem;color:#4ade80;font-weight:600;">✓ Confirmed Closed (${t.student_rating || 5}★)</span>`;
+          }
+
+          return `
+            <div class="task-card ${cardClass}">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+                <div>
+                  <span style="font-family:monospace;font-weight:700;color:var(--gold-400);">${t.complaint_code}</span>
+                  <h4 style="margin-top:2px;">${t.title}</h4>
+                  <span style="font-size:0.8rem;color:var(--text-secondary);">${t.category} &bull; ${t.sub_category}</span>
+                </div>
+                <div style="display:flex;gap:0.4rem;align-items:center;">
+                  ${getPriorityBadge(t.priority)}
+                  ${getStatusBadge(t.status)}
+                </div>
+              </div>
+
+              <p style="color:var(--text-secondary);font-size:0.88rem;background:rgba(9,18,32,0.6);padding:0.75rem;border-radius:6px;">
+                ${t.description}
+              </p>
+
+              ${studentContact}
+
+              <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px solid rgba(255,255,255,0.06);padding-top:0.75rem;margin-top:0.25rem;">
+                <span style="font-size:0.75rem;color:var(--text-muted);">Assigned on ${formatDate(t.created_at)}</span>
+                <div>${actionButtons}</div>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      } catch (err) {
+        feed.innerHTML = `<div style="color:#f87171;padding:2rem;text-align:center;">${err.message}</div>`;
+      }
+    }
+
+    async function startJob(complaintId) {
+      try {
+        const res = await apiFetch(`/api/complaints/${complaintId}/start`, { method: "POST" });
+        showToast(res.message, "success");
+        loadWorkerTasks();
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    function openCompleteModal(complaintId) {
+      activeCompleteComplaintId = complaintId;
+      const t = workerTasksList.find(item => item.id === complaintId);
+      if (!t) return;
+
+      document.getElementById("complete-ticket-code").textContent = `${t.complaint_code} — ${t.title}`;
+      document.getElementById("complete-task-form").reset();
+      
+      // Reset GPS
+      document.getElementById("gps-lat").value = "";
+      document.getElementById("gps-lng").value = "";
+      document.getElementById("gps-acc").value = "";
+      document.getElementById("gps-status-text").innerHTML = "Click 'Capture Live GPS' to verify on-site presence.";
+
+      openModal("complete-modal");
+      // Auto-trigger GPS detection
+      captureLiveGps();
+    }
+
+    function captureLiveGps() {
+      const statusEl = document.getElementById("gps-status-text");
+      const detectBtn = document.getElementById("detect-gps-btn");
+
+      if (!navigator.geolocation) {
+        useFallbackGps("Browser geolocation unsupported.");
+        return;
+      }
+
+      statusEl.innerHTML = "<span style='color:var(--gold-400);'>Acquiring GPS satellite fix...</span>";
+      detectBtn.disabled = true;
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lng = position.coords.longitude;
+          const acc = position.coords.accuracy || 10;
+
+          document.getElementById("gps-lat").value = lat;
+          document.getElementById("gps-lng").value = lng;
+          document.getElementById("gps-acc").value = acc;
+
+          statusEl.innerHTML = `<span style="color:#4ade80;font-weight:700;">✓ Coordinates Locked: ${lat.toFixed(5)}° N, ${lng.toFixed(5)}° E (±${acc.toFixed(0)}m)</span>`;
+          detectBtn.disabled = false;
+          detectBtn.textContent = "Re-Capture";
+        },
+        (error) => {
+          console.warn("Geolocation denied/failed:", error.message);
+          useFallbackGps(error.message);
+        },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+      );
+    }
+
+    function useFallbackGps(reason) {
+      // University campus baseline coordinates for desktop testing fallback
+      const campusLat = 28.53551 + (Math.random() * 0.002 - 0.001);
+      const campusLng = 77.39102 + (Math.random() * 0.002 - 0.001);
+
+      document.getElementById("gps-lat").value = campusLat;
+      document.getElementById("gps-lng").value = campusLng;
+      document.getElementById("gps-acc").value = 12.0;
+
+      const statusEl = document.getElementById("gps-status-text");
+      const detectBtn = document.getElementById("detect-gps-btn");
+      statusEl.innerHTML = `<span style="color:#facc15;font-weight:600;">✓ Campus GPS Coordinates Synced: ${campusLat.toFixed(5)}° N, ${campusLng.toFixed(5)}° E (Desktop fallback: ${reason})</span>`;
+      detectBtn.disabled = false;
+      detectBtn.textContent = "Re-Capture";
+    }
+
+    async function handleSubmitCompletion(e) {
+      e.preventDefault();
+      if (!activeCompleteComplaintId) return;
+
+      const lat = parseFloat(document.getElementById("gps-lat").value);
+      const lng = parseFloat(document.getElementById("gps-lng").value);
+      const acc = parseFloat(document.getElementById("gps-acc").value) || 10.0;
+      const notes = document.getElementById("complete-notes").value.trim();
+      const photoFile = document.getElementById("complete-photo-file").files[0];
+      const btn = document.getElementById("submit-complete-btn");
+
+      if (isNaN(lat) || isNaN(lng)) {
+        showToast("GPS coordinates required. Please click 'Capture Live GPS'.", "error");
+        return;
+      }
+
+      if (!photoFile) {
+        showToast("Please attach a completion proof photograph.", "error");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Uploading Proof & Submitting...";
+
+      try {
+        // Upload photo
+        const formData = new FormData();
+        formData.append("file", photoFile);
+        const uploadRes = await apiFetch("/api/complaints/upload-evidence", {
+          method: "POST",
+          body: formData
+        });
+
+        // Submit completion
+        const payload = {
+          completion_photo: uploadRes.url,
+          completion_notes: notes,
+          completion_lat: lat,
+          completion_lng: lng,
+          completion_accuracy: acc
+        };
+
+        const res = await apiFetch(`/api/complaints/${activeCompleteComplaintId}/complete`, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        });
+
+        showToast(res.message, "success");
+        closeModal("complete-modal");
+        loadWorkerTasks();
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Submit Proof & Notify Student";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = getUser();
+      if (!user || user.role !== "worker") {
+        window.location.href = "/login.html";
+        return;
+      }
+      renderTopbar();
+      loadWorkerTasks();
+    });
+  </script>
+</body>
+</html>

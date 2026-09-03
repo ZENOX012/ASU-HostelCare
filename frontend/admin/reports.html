@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics & Reports — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Warden Office</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Command Center</span>
+        </a>
+        <a href="/admin/staff.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Staff & Workers</span>
+        </a>
+        <a href="/admin/gym.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Settings</span>
+        </a>
+        <a href="/admin/reports.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Reports & Export</span>
+        </a>
+        <a href="/admin/database.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <span>Database Inspector</span>
+        </a>
+        <a href="/admin/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Warden Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">Sign Out</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Institutional Grievance Analytics & Exports</h1>
+          <span class="role-tag role-warden">Warden</span>
+        </div>
+        <div class="topbar-right">
+          <a href="/admin/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Hostel Warden</div>
+              <div id="topbar-user-room" class="user-room">Chief Administrator</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+          <div>
+            <h2 class="gold-text">Maintenance Analytics & Archival Export</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">
+              Audited maintenance records, resident satisfaction ratings, and complete Excel-compatible datasets.
+            </p>
+          </div>
+          <button onclick="downloadComplaintsCsv()" class="btn btn-primary" style="padding: 0.8rem 1.8rem; box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);">
+            📥 Download Full CSV (Excel Format)
+          </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #60a5fa;"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg></div>
+            <div class="stat-info">
+              <span id="rep-total" class="stat-value">0</span>
+              <span class="stat-label">Total Grievances</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #4ade80;"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg></div>
+            <div class="stat-info">
+              <span id="rep-res-rate" class="stat-value">0%</span>
+              <span class="stat-label">Resolution Rate</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #facc15;"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+            <div class="stat-info">
+              <span id="rep-rating" class="stat-value">5.0 ★</span>
+              <span class="stat-label">Resident Satisfaction</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon" style="color: #c084fc;"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+            <div class="stat-info">
+              <span id="rep-residents" class="stat-value">0</span>
+              <span class="stat-label">Approved Residents</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Breakdown: Categories & Priorities -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+          <div class="academic-panel">
+            <h3 style="color: var(--gold-400); margin-bottom: 1.25rem;">Complaints by Category</h3>
+            <div id="category-breakdown-list" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="color: var(--text-muted);">Loading category metrics...</div>
+            </div>
+          </div>
+
+          <div class="academic-panel">
+            <h3 style="color: var(--gold-400); margin-bottom: 1.25rem;">Complaints by Priority Urgency</h3>
+            <div id="priority-breakdown-list" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <div style="color: var(--text-muted);">Loading priority metrics...</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="academic-panel" style="margin-top: 1.5rem; border-left: 3px solid var(--gold-500);">
+          <h4 style="color: var(--gold-400); margin-bottom: 0.35rem;">CSV Export Field Inclusions</h4>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; line-height: 1.6;">
+            The exported CSV report contains UTF-8 BOM encoding and all critical audit fields: 
+            <strong>Complaint Reference Code, Filing Date, Student Name, Student Email, Phone, Hostel Block & Room Number, Category, Sub-Category, Subject Title, Description, Priority, Resolution Status, Assigned Tradesperson & Trade, GPS Latitude, GPS Longitude, GPS Accuracy (m), Completion Timestamp, Student Rating (1-5★), Student Feedback Remarks, and Photographic Evidence URLs.</strong>
+          </p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script>
+    async function loadReportsData() {
+      try {
+        const data = await apiFetch("/api/reports/stats");
+
+        document.getElementById("rep-total").textContent = data.total_complaints;
+        document.getElementById("rep-res-rate").textContent = `${data.resolution_rate}%`;
+        document.getElementById("rep-rating").textContent = `${data.average_rating} ★`;
+        document.getElementById("rep-residents").textContent = data.total_students;
+
+        // Render Categories
+        const catContainer = document.getElementById("category-breakdown-list");
+        const categories = data.categories || {};
+        const catKeys = Object.keys(categories);
+        if (catKeys.length === 0) {
+          catContainer.innerHTML = `<div style="color:var(--text-muted);">No category records found yet.</div>`;
+        } else {
+          catContainer.innerHTML = catKeys.map(k => {
+            const count = categories[k];
+            const pct = data.total_complaints > 0 ? ((count / data.total_complaints) * 100).toFixed(0) : 0;
+            return `
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.88rem;margin-bottom:4px;">
+                  <span style="font-weight:600;color:var(--text-primary);">${k}</span>
+                  <span style="color:var(--gold-400);font-weight:700;">${count} (${pct}%)</span>
+                </div>
+                <div style="height:6px;background:var(--navy-800);border-radius:3px;overflow:hidden;">
+                  <div style="width:${pct}%;height:100%;background:var(--gold-gradient);"></div>
+                </div>
+              </div>
+            `;
+          }).join("");
+        }
+
+        // Render Priorities
+        const priContainer = document.getElementById("priority-breakdown-list");
+        const priorities = data.priorities || {};
+        const priKeys = Object.keys(priorities);
+        if (priKeys.length === 0) {
+          priContainer.innerHTML = `<div style="color:var(--text-muted);">No priority records found yet.</div>`;
+        } else {
+          priContainer.innerHTML = priKeys.map(k => {
+            const count = priorities[k];
+            const pct = data.total_complaints > 0 ? ((count / data.total_complaints) * 100).toFixed(0) : 0;
+            return `
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.88rem;margin-bottom:4px;">
+                  <span>${getPriorityBadge(k)}</span>
+                  <span style="color:var(--text-primary);font-weight:700;">${count} (${pct}%)</span>
+                </div>
+                <div style="height:6px;background:var(--navy-800);border-radius:3px;overflow:hidden;">
+                  <div style="width:${pct}%;height:100%;background:var(--gold-gradient);"></div>
+                </div>
+              </div>
+            `;
+          }).join("");
+        }
+
+      } catch (err) {
+        showToast("Error loading analytics.", "error");
+      }
+    }
+
+    async function downloadComplaintsCsv() {
+      const token = getToken();
+      try {
+        showToast("Preparing CSV export...", "info");
+        const res = await fetch("/api/reports/export-csv", {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        if (!res.ok) throw new Error("Export failed.");
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `ASU_HostelCare_Complaints_${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast("CSV dataset downloaded successfully!", "success");
+      } catch (err) {
+        showToast(err.message, "error");
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTopbar();
+      loadReportsData();
+    });
+  </script>
+</body>
+</html>

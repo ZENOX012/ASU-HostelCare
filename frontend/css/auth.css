@@ -1,0 +1,228 @@
+/* ==========================================================================
+   ASU HostelCare — Authentication & Registration Wizard Styles
+   Login Split Stage, 6-Box OTP Inputs, Success State, 3-Step Student Wizard
+   ========================================================================== */
+
+/* Login Stage */
+.auth-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(197, 155, 39, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(92, 20, 33, 0.15), transparent 50%),
+    var(--navy-950);
+}
+
+.auth-footer {
+  margin-top: 2.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  width: 100%;
+  max-width: 960px;
+}
+
+.auth-stage {
+  width: 100%;
+  max-width: 960px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.scene-box {
+  padding: 1rem 1.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+.auth-tabs {
+  display: flex;
+  background: var(--navy-850);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.65rem 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.auth-tab.active {
+  background: var(--gold-500);
+  color: var(--navy-950);
+  box-shadow: 0 2px 8px rgba(197, 155, 39, 0.35);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  animation: fadeIn 0.25s ease;
+}
+
+.otp-boxes {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  margin: 1.25rem 0 0.85rem;
+}
+
+.otp-boxes input {
+  width: 44px;
+  height: 52px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border: 1.5px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--navy-850);
+  color: var(--gold-300);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.otp-boxes input:focus {
+  border-color: var(--gold-400);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
+
+.success-state-panel {
+  display: none;
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.success-state-panel.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+.success-check-circle {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.15);
+  border: 2px solid #22c55e;
+  color: #22c55e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 1rem;
+  box-shadow: 0 0 16px rgba(34, 197, 94, 0.35);
+}
+
+@media (max-width: 860px) {
+  .auth-stage {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .scene-box {
+    display: none;
+  }
+}
+
+/* 3-Step Registration Wizard */
+.register-page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background:
+    radial-gradient(circle at 20% 25%, rgba(197, 155, 39, 0.12), transparent 45%),
+    radial-gradient(circle at 80% 75%, rgba(92, 20, 33, 0.15), transparent 50%),
+    var(--navy-950);
+}
+
+.register-card {
+  width: 100%;
+  max-width: 540px;
+}
+
+.step-section {
+  display: none;
+}
+
+.step-section.active {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.pending-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(197, 155, 39, 0.15);
+  border: 2px solid var(--gold-400);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.25rem;
+  font-size: 32px;
+  box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+  animation: pulseGold 2s infinite;
+}
+
+.photo-upload-box {
+  border: 2px dashed var(--card-border);
+  border-radius: 8px;
+  padding: 1.75rem;
+  text-align: center;
+  background: rgba(9, 18, 32, 0.6);
+  margin: 1.5rem 0;
+}
+
+.avatar-preview-circle {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 2px solid var(--gold-400);
+  object-fit: cover;
+  margin: 0 auto 1rem;
+  display: block;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+}
+
+.skip-link {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.skip-link:hover {
+  color: var(--gold-400);
+}

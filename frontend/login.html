@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>University Authentication Portal — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+  <link rel="stylesheet" href="/frontend/css/auth.css">
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    
+    <div class="auth-stage">
+
+      <!-- LEFT SIDE SCENE / BRAND SHOWCASE -->
+      <div class="scene-box">
+        <div style="margin-bottom: 1.25rem;">
+          <img src="/frontend/assets/logo.png" alt="Apeejay Stya University Logo" style="width: 84px; height: 84px; border-radius: 50%; border: 2px solid var(--gold-400); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); background: #ffffff;">
+        </div>
+
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; color: var(--gold-400); font-family: monospace; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.85rem;">
+          <span style="width: 20px; height: 2px; background: var(--gold-400); display: inline-block;"></span>
+          ASU HOSTEL SERVICES
+        </div>
+
+        <h1 style="font-family: var(--font-academic); font-size: 2.3rem; line-height: 1.18; color: #ffffff; margin-bottom: 1rem;">
+          File a complaint,<br>track it in <span style="color: var(--gold-400);">real time.</span>
+        </h1>
+
+        <p style="color: var(--text-secondary); font-size: 0.98rem; line-height: 1.6; max-width: 420px; margin-bottom: 1.75rem;">
+          Room, Wi-Fi, Water, Electricity, Gym or Laundry issues — report, assign to specialized tradespersons, and resolve them all from one secure portal.
+        </p>
+
+        <div style="display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.4); color: #4ade80; padding: 0.45rem 0.85rem; border-radius: 6px; font-family: monospace; font-size: 0.82rem; font-weight: 600;">
+          <span>📍</span> Live GPS & Geo-Proof Resolution Verified ✓
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: SECURE AUTHENTICATION CARD -->
+      <div class="certificate-card auth-card">
+        
+        <div id="login-header-block" style="text-align: center; margin-bottom: 1.25rem;">
+          <a href="/">
+            <img src="/frontend/assets/logo.png" alt="Apeejay Stya University Logo" style="width: 64px; height: 64px; border-radius: 50%; border: 1.5px solid var(--gold-400); box-shadow: 0 0 14px rgba(212, 175, 55, 0.35); background: #ffffff;">
+          </a>
+          <h2 style="font-family: var(--font-academic); font-size: 1.25rem; margin-top: 0.5rem; letter-spacing: 0.04em;">Official Sign In</h2>
+          <p style="color: var(--gold-400); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;">Apeejay Stya University Portal</p>
+        </div>
+
+        <!-- Working Navigation Tabs -->
+        <div class="auth-tabs" id="auth-tabs">
+          <button class="auth-tab active" onclick="switchAuthTab('password')">🔑 Password Login</button>
+          <button class="auth-tab" onclick="switchAuthTab('otp')">📱 Mobile OTP</button>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div class="success-state-panel" id="success-panel">
+          <div class="success-check-circle">✓</div>
+          <h3 style="color: #ffffff; font-size: 1.25rem; margin-bottom: 0.35rem;">Signed in successfully 🎉</h3>
+          <p id="success-msg" style="color: var(--text-secondary); font-size: 0.88rem;">Redirecting to your dashboard...</p>
+        </div>
+
+        <!-- TAB 1: Institutional Password Authentication -->
+        <div id="tab-password" class="tab-content active">
+          <form id="password-login-form" onsubmit="handlePasswordLogin(event)">
+            <div class="form-group">
+              <label class="form-label" for="login-email">Email Address</label>
+              <input type="email" id="login-email" class="form-input" placeholder="e.g. student@asu.edu" required autofocus>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+                <label class="form-label" for="login-password" style="margin-bottom: 0;">Account Password</label>
+              </div>
+              <div class="password-wrapper">
+                <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                <button type="button" class="eye-toggle-btn" data-target="login-password" title="Show password" aria-label="Toggle password visibility">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <p style="font-size: 0.78rem; color: var(--gold-400); margin: 0.35rem 0 1.25rem;">
+              Forgot your password? Ask your warden to reset it — passwords aren't self-service.
+            </p>
+
+            <button type="submit" id="login-submit-btn" class="btn btn-primary btn-block">
+              Sign In to Portal →
+            </button>
+          </form>
+        </div>
+
+        <!-- TAB 2: Mobile OTP Authentication -->
+        <div id="tab-otp" class="tab-content">
+          <!-- Step A: Enter Phone -->
+          <div id="otp-phone-step">
+            <div class="form-group">
+              <label class="form-label" for="otp-phone">Registered Mobile Number</label>
+              <div style="display: flex; gap: 0.4rem;">
+                <span style="display: flex; align-items: center; padding: 0 0.65rem; background: var(--navy-800); border: 1px solid var(--card-border); border-radius: 6px; font-size: 0.85rem; color: var(--gold-300); font-weight: 600;">🇮🇳 +91</span>
+                <input type="tel" id="otp-phone" class="form-input" placeholder="98765 43210" maxlength="10" inputmode="numeric">
+              </div>
+              <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.35rem;">A 6-digit OTP will be sent to your registered number.</p>
+            </div>
+            <button type="button" id="send-otp-btn" onclick="requestOtpCode()" class="btn btn-primary btn-block" disabled>
+              Send OTP
+            </button>
+          </div>
+
+          <!-- Step B: Enter 6-digit OTP -->
+          <div id="otp-code-step" style="display: none;">
+            <label class="form-label" style="text-align: center; display: block;">Enter 6-Digit Verification Code</label>
+            <div class="otp-boxes" id="otp-boxes">
+              <input type="text" maxlength="1" inputmode="numeric">
+              <input type="text" maxlength="1" inputmode="numeric">
+              <input type="text" maxlength="1" inputmode="numeric">
+              <input type="text" maxlength="1" inputmode="numeric">
+              <input type="text" maxlength="1" inputmode="numeric">
+              <input type="text" maxlength="1" inputmode="numeric">
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; margin-bottom: 1.25rem;">
+              <span id="otp-sent-to" style="color: var(--text-muted);">Sent to +91 •••• ••••</span>
+              <button type="button" id="resend-btn" onclick="requestOtpCode()" style="background: none; border: none; color: var(--gold-400); font-weight: 600; cursor: pointer;" disabled>Resend (30s)</button>
+            </div>
+
+            <button type="button" id="verify-otp-btn" onclick="submitOtpVerification()" class="btn btn-primary btn-block" disabled>
+              Verify & Sign In →
+            </button>
+            <div style="text-align: center; margin-top: 0.85rem;">
+              <a href="javascript:void(0)" onclick="backToPhoneStep()" style="font-size: 0.8rem; color: var(--text-muted);">← change number</a>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center; font-size: 0.88rem; color: var(--text-secondary);">
+          Don't have an account? 
+          <a href="/register.html" style="color: var(--gold-400); font-weight: 600;">Create one</a>
+        </div>
+
+        <div style="margin-top: 0.5rem; text-align: center; font-size: 0.82rem;">
+          <a href="/track.html" style="color: var(--text-muted);">Track a complaint without signing in →</a>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- University Footer with Blinking Social Media Logos -->
+    <footer class="auth-footer">
+      <div style="display: flex; justify-content: center; align-items: center; gap: 1.25rem; margin-bottom: 0.85rem;">
+        <!-- Instagram -->
+        <a href="https://www.instagram.com/apeejay_stya_university?igsi=MXdpamZjcm5iaDR6aQ==" target="_blank" rel="noopener noreferrer" class="social-blink-btn instagram" title="Follow ASU on Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+
+        <!-- Facebook -->
+        <a href="https://www.facebook.com/share/1UmWPvGquK/" target="_blank" rel="noopener noreferrer" class="social-blink-btn facebook" title="Follow ASU on Facebook">
+          <svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        </a>
+
+        <!-- YouTube -->
+        <a href="https://youtube.com/@apeejaystyauniversity?si=B1vfpG4w6Y0Q8_mh" target="_blank" rel="noopener noreferrer" class="social-blink-btn youtube" title="Watch ASU on YouTube">
+          <svg viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </a>
+      </div>
+
+      <p style="margin-bottom: 0.35rem; color: var(--text-secondary);">
+        ASU HostelCare • Campus Residential Services Administration
+      </p>
+      <p style="font-size: 0.8rem;">
+        Super-Admin Support: <a href="mailto:admin@asu.edu" style="color: var(--gold-400); font-weight: 600;">admin@asu.edu</a> | Emergency Helpline: Ext. 100 / +91 98765 00001
+      </p>
+    </footer>
+
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script src="/frontend/js/auth.js"></script>
+  <script>
+    // Tab switching between Password & Mobile OTP
+    function switchAuthTab(tabName) {
+      document.querySelectorAll(".auth-tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+      if (tabName === "password") {
+        document.querySelectorAll(".auth-tab")[0].classList.add("active");
+        document.getElementById("tab-password").classList.add("active");
+      } else if (tabName === "otp") {
+        document.querySelectorAll(".auth-tab")[1].classList.add("active");
+        document.getElementById("tab-otp").classList.add("active");
+      }
+    }
+
+    function handleSuccessfulLogin(data) {
+      setToken(data.access_token);
+      setUser(data.user);
+
+      // Hide form elements and display success state
+      document.getElementById("auth-tabs").style.display = "none";
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      document.getElementById("success-panel").classList.add("active");
+      document.getElementById("success-msg").textContent = `Welcome, ${data.user.full_name}! Redirecting...`;
+
+      setTimeout(() => redirectByRole(data.user.role), 600);
+    }
+
+    // Password login
+    async function handlePasswordLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+      const btn = document.getElementById("login-submit-btn");
+
+      btn.disabled = true;
+      btn.textContent = "Signing in...";
+
+      try {
+        const data = await apiFetch("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({ email, password })
+        });
+        handleSuccessfulLogin(data);
+      } catch (err) {
+        showToast(err.message, "error");
+        btn.disabled = false;
+        btn.textContent = "Sign In to Portal →";
+      }
+    }
+
+    // Mobile OTP logic
+    const phoneInput = document.getElementById("otp-phone");
+    const sendOtpBtn = document.getElementById("send-otp-btn");
+    const otpBoxes = [...document.querySelectorAll("#otp-boxes input")];
+    const verifyOtpBtn = document.getElementById("verify-otp-btn");
+    const resendBtn = document.getElementById("resend-btn");
+    let resendTimer = null;
+
+    phoneInput.addEventListener("input", (e) => {
+      e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+      sendOtpBtn.disabled = e.target.value.length !== 10;
+    });
+
+    function startResendCountdown() {
+      let timeLeft = 30;
+      resendBtn.disabled = true;
+      resendBtn.textContent = `Resend (${timeLeft}s)`;
+      clearInterval(resendTimer);
+      resendTimer = setInterval(() => {
+        timeLeft--;
+        resendBtn.textContent = `Resend (${timeLeft}s)`;
+        if (timeLeft <= 0) {
+          clearInterval(resendTimer);
+          resendBtn.disabled = false;
+          resendBtn.textContent = "Resend OTP";
+        }
+      }, 1000);
+    }
+
+    async function requestOtpCode() {
+      const phone = phoneInput.value.trim();
+      if (phone.length !== 10) return;
+
+      sendOtpBtn.disabled = true;
+      sendOtpBtn.textContent = "Sending...";
+
+      try {
+        const data = await apiFetch("/api/auth/send-otp", {
+          method: "POST",
+          body: JSON.stringify({ phone })
+        });
+
+        document.getElementById("otp-phone-step").style.display = "none";
+        document.getElementById("otp-code-step").style.display = "block";
+        document.getElementById("otp-sent-to").textContent = `Sent to +91 •••• •••${phone.slice(-2)}`;
+
+        otpBoxes.forEach(b => b.value = "");
+        otpBoxes[0].focus();
+        startResendCountdown();
+
+        if (data.demo_otp) {
+          showToast(`Test OTP: ${data.demo_otp}`, "info");
+          const digits = data.demo_otp.split("");
+          digits.forEach((d, idx) => { if (otpBoxes[idx]) otpBoxes[idx].value = d; });
+          verifyOtpBtn.disabled = false;
+        }
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        sendOtpBtn.disabled = phoneInput.value.length !== 10;
+        sendOtpBtn.textContent = "Send OTP";
+      }
+    }
+
+    function backToPhoneStep() {
+      document.getElementById("otp-code-step").style.display = "none";
+      document.getElementById("otp-phone-step").style.display = "block";
+      clearInterval(resendTimer);
+    }
+
+    // Individual OTP box controls with auto-advance and backspace
+    otpBoxes.forEach((box, i) => {
+      box.addEventListener("input", (e) => {
+        box.value = box.value.replace(/\D/g, '').slice(0, 1);
+        if (box.value && i < otpBoxes.length - 1) {
+          otpBoxes[i + 1].focus();
+        }
+        verifyOtpBtn.disabled = !otpBoxes.every(b => b.value.length === 1);
+      });
+
+      box.addEventListener("keydown", (e) => {
+        if (e.key === "Backspace" && !box.value && i > 0) {
+          otpBoxes[i - 1].focus();
+        }
+      });
+
+      box.addEventListener("paste", (e) => {
+        const pasteData = (e.clipboardData.getData("text") || "").replace(/\D/g, '').slice(0, 6);
+        if (pasteData.length) {
+          e.preventDefault();
+          pasteData.split("").forEach((ch, idx) => {
+            if (otpBoxes[idx]) otpBoxes[idx].value = ch;
+          });
+          verifyOtpBtn.disabled = !otpBoxes.every(b => b.value.length === 1);
+          otpBoxes[Math.min(pasteData.length, otpBoxes.length - 1)].focus();
+        }
+      });
+    });
+
+    async function submitOtpVerification() {
+      const otp = otpBoxes.map(b => b.value).join("");
+      const phone = phoneInput.value.trim();
+
+      verifyOtpBtn.disabled = true;
+      verifyOtpBtn.textContent = "Verifying...";
+
+      try {
+        const data = await apiFetch("/api/auth/verify-otp", {
+          method: "POST",
+          body: JSON.stringify({ phone, otp })
+        });
+        handleSuccessfulLogin(data);
+      } catch (err) {
+        showToast(err.message, "error");
+        verifyOtpBtn.disabled = false;
+        verifyOtpBtn.textContent = "Verify & Sign In →";
+      }
+    }
+  </script>
+  <script src="/frontend/js/protect.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gym Settings & Operational Rules — ASU HostelCare</title>
+  <link rel="stylesheet" href="/frontend/css/theme.css">
+  <link rel="stylesheet" href="/frontend/css/components.css">
+  <link rel="stylesheet" href="/frontend/css/dashboard.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <img src="/frontend/assets/crest.svg" alt="ASU Seal" class="sidebar-crest">
+        <div class="sidebar-brand-text">
+          <h2>ASU HOSTELCARE</h2>
+          <span>Warden Office</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/admin/dashboard.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Command Center</span>
+        </a>
+        <a href="/admin/staff.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          <span>Staff & Workers</span>
+        </a>
+        <a href="/admin/gym.html" class="nav-link active">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M6 5v14M18 5v14M2 9h4M18 9h4M2 15h4M18 15h4M6 12h12"></path></svg>
+          <span>Gym Settings</span>
+        </a>
+        <a href="/admin/reports.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Reports & Export</span>
+        </a>
+        <a href="/admin/database.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          <span>Database Inspector</span>
+        </a>
+        <a href="/admin/profile.html" class="nav-link">
+          <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          <span>Warden Profile</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button onclick="logout()" class="btn btn-secondary btn-sm btn-block">Sign Out</button>
+      </div>
+    </aside>
+
+    <div class="main-wrapper">
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 class="topbar-title">Gymnasium Facility Configuration</h1>
+          <span class="role-tag role-warden">Warden</span>
+        </div>
+        <div class="topbar-right">
+          <a href="/admin/profile.html" class="user-profile-menu" style="text-decoration:none;">
+            <img id="topbar-user-avatar" src="/frontend/assets/default_avatar.svg" alt="Avatar" class="topbar-avatar">
+            <div class="user-meta">
+              <div id="topbar-user-name" class="user-name">Hostel Warden</div>
+              <div id="topbar-user-room" class="user-room">Chief Administrator</div>
+            </div>
+          </a>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <div style="max-width: 800px; margin: 0 auto;">
+          <h2 class="gold-text" style="margin-bottom: 0.5rem;">Gymnasium Operational Guidelines</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 2rem;">
+            Configure training schedules, active fitness equipment, and safety regulations displayed to resident students.
+          </p>
+
+          <div class="academic-panel">
+            <form id="admin-gym-form" onsubmit="handleSaveGymSettings(event)">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                  <label class="form-label">Morning Operational Timings <span class="required">*</span></label>
+                  <input type="text" id="g-morning" class="form-input" required placeholder="e.g. 06:00 AM – 09:30 AM">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Evening Operational Timings <span class="required">*</span></label>
+                  <input type="text" id="g-evening" class="form-input" required placeholder="e.g. 05:00 PM – 10:00 PM">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div class="form-group">
+                  <label class="form-label">Trainer Name <span class="required">*</span></label>
+                  <input type="text" id="g-trainer" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Trainer Extension / Contact <span class="required">*</span></label>
+                  <input type="text" id="g-contact" class="form-input" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Active Equipment & Zones (One per line) <span class="required">*</span></label>
+                <textarea id="g-facilities" class="form-textarea" rows="6" required placeholder="Cardio Zone&#10;Free Weights Area&#10;Squat Rack..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Gym Rules & Etiquette (One per line) <span class="required">*</span></label>
+                <textarea id="g-rules" class="form-textarea" rows="6" required placeholder="1. Clean sports shoes mandatory&#10;2. Re-rack weights after use..."></textarea>
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
+                <button type="submit" id="save-gym-btn" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                  Save Gymnasium Configuration
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="/frontend/js/api.js"></script>
+  <script src="/frontend/js/common.js"></script>
+  <script>
+    async function loadGymConfig() {
+      try {
+        const gym = await apiFetch("/api/gym");
+        document.getElementById("g-morning").value = gym.morning_timings || "";
+        document.getElementById("g-evening").value = gym.evening_timings || "";
+        document.getElementById("g-trainer").value = gym.trainer_name || "";
+        document.getElementById("g-contact").value = gym.trainer_contact || "";
+        document.getElementById("g-facilities").value = gym.facilities_raw || "";
+        document.getElementById("g-rules").value = gym.rules_raw || "";
+      } catch (err) {
+        showToast("Error loading gym settings.", "error");
+      }
+    }
+
+    async function handleSaveGymSettings(e) {
+      e.preventDefault();
+      const btn = document.getElementById("save-gym-btn");
+      btn.disabled = true;
+      btn.textContent = "Saving Settings...";
+
+      try {
+        const payload = {
+          morning_timings: document.getElementById("g-morning").value.trim(),
+          evening_timings: document.getElementById("g-evening").value.trim(),
+          trainer_name: document.getElementById("g-trainer").value.trim(),
+          trainer_contact: document.getElementById("g-contact").value.trim(),
+          facilities: document.getElementById("g-facilities").value.trim(),
+          rules: document.getElementById("g-rules").value.trim()
+        };
+
+        const res = await apiFetch("/api/gym", {
+          method: "PUT",
+          body: JSON.stringify(payload)
+        });
+
+        showToast(res.message, "success");
+      } catch (err) {
+        showToast(err.message, "error");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Save Gymnasium Configuration";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTopbar();
+      loadGymConfig();
+    });
+  </script>
+</body>
+</html>

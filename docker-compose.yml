@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  hostelcare:
+    build: .
+    container_name: asu_hostelcare_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - APP_ENV=production
+      - DEBUG=false
+    volumes:
+      - ./data:/app/data
+      - ./backend/uploads:/app/backend/uploads
