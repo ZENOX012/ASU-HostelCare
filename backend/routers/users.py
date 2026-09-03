@@ -166,10 +166,10 @@ def create_worker_account(
 @router.post("/wardens", response_model=UserOut)
 def create_warden_account(
     payload: WardenCreateRequest,
-    current_admin: User = Depends(require_roles("warden")),
+    current_admin: User = Depends(require_roles("admin")),
     db: Session = Depends(get_db)
 ):
-    """Super-Admin/Warden creates another Warden / Assistant Warden account."""
+    """ONLY Super-Admin creates a Warden account."""
     existing = db.query(User).filter(User.email == payload.email.lower()).first()
     if existing:
         raise HTTPException(status_code=400, detail="An account with this email already exists.")

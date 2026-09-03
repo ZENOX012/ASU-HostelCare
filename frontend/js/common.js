@@ -103,8 +103,10 @@ function renderTopbar() {
       roomEl.textContent = `Block ${user.hostel_block || "—"}, Rm ${user.room_number || "—"}`;
     } else if (user.role === "worker") {
       roomEl.textContent = `${user.worker_specialization || "Staff"} • ${user.worker_shift || "Day"} Shift`;
+    } else if (user.role === "admin") {
+      roomEl.textContent = "Super Admin • Central Administration";
     } else {
-      roomEl.textContent = "Warden Office";
+      roomEl.textContent = "Hostel Warden • Residential Services";
     }
   }
   if (avatarEl && user.profile_photo) {

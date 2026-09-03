@@ -53,9 +53,13 @@ def get_current_user(
     return user
 
 def require_roles(*roles: str):
-    """Dependency factory restricting access to specified roles."""
+    """Dependency factory restricting access to specified roles. Admin has automatic access to warden roles."""
     def role_checker(user: User = Depends(get_current_user)) -> User:
-        if user.role not in roles:
+        allowed = set(roles)
+        # Admin is supreme university authority; has access to all warden resources
+        if "warden" in allowed:
+            allowed.add("admin")
+        if user.role not in allowed:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail=f"Access denied. Requires one of roles: {', '.join(roles)}"

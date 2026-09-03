@@ -25,22 +25,26 @@ def seed_database():
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        # Seed Warden / Super Admin
+        # Seed Super Admin (Supreme Authority above Warden)
         admin = db.query(User).filter(User.email == settings.SEED_ADMIN_EMAIL.lower()).first()
         if not admin:
-            logger.info("Seeding default Warden Super-Admin account...")
+            logger.info("Seeding default University Super-Admin account...")
             admin = User(
                 email=settings.SEED_ADMIN_EMAIL.lower(),
                 hashed_password=hash_password(settings.SEED_ADMIN_PASSWORD),
-                full_name=settings.SEED_ADMIN_NAME,
-                role="warden",
+                full_name="University Super Admin",
+                role="admin",
                 status="APPROVED",
                 phone="+91 98765 00001",
-                hostel_block="Admin Wing",
-                room_number="W-01",
-                address="Hostel Warden Headquarters, ASU Campus",
+                hostel_block="Central Admin Wing",
+                room_number="Admin-HQ",
+                address="University Central Administration, ASU Campus",
                 profile_photo="/frontend/assets/default_avatar.svg"
             )
+            db.add(admin)
+        else:
+            admin.role = "admin"
+            admin.full_name = "University Super Admin"
             db.add(admin)
 
         # Seed sample workers for immediate demonstration of smart dispatch

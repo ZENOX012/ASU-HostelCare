@@ -41,7 +41,7 @@ function setupPasswordToggles() {
 
 // Redirect user based on authenticated role
 function redirectByRole(role) {
-  if (role === "warden") {
+  if (role === "admin" || role === "warden") {
     window.location.href = "/admin/dashboard.html";
   } else if (role === "worker") {
     window.location.href = "/worker/dashboard.html";
