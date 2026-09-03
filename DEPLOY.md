@@ -70,14 +70,3 @@ Aapka server background me port 8000 par live chalne lagega!
 Project ke root folder me `index.html` file banayi gayi hai:
 - Agar aap bina Python ke direct files dekhna chahte ho, to seedha `index.html` par double click karke browser me khol sakte ho.
 - Agar aap kisi static host (GitHub Pages, Netlify, Vercel Static, cPanel public_html) par sirf frontend daalna chahte ho, to root `index.html` automatically landing page load kar deta hai.
-
----
-
-## 🔑 Login Credentials (For Testing)
-
-| Role | Email | Password |
-| :--- | :--- | :--- |
-| **Warden (Admin)** | `admin@asu.edu` | `admin123` |
-| **Electrician (Worker)** | `electrician@asu.edu` | `worker123` |
-| **Plumber (Worker)** | `plumber@asu.edu` | `worker123` |
-| **Student** | Apply via Registration | Register karte time choose karo |
