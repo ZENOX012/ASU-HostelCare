@@ -6,7 +6,7 @@ from backend.database import get_db
 from backend.models import User, Notification, Complaint
 from backend.schemas import (
     UserOut, UserProfileUpdateRequest, PasswordResetRequest, 
-    WorkerCreateRequest, StatusUpdateRequest
+    WorkerCreateRequest, WardenCreateRequest, StatusUpdateRequest
 )
 from backend.security import hash_password
 from backend.routers.auth import get_current_user, require_roles
@@ -162,6 +162,35 @@ def create_worker_account(
     db.commit()
     db.refresh(worker)
     return worker
+
+@router.post("/wardens", response_model=UserOut)
+def create_warden_account(
+    payload: WardenCreateRequest,
+    current_admin: User = Depends(require_roles("warden")),
+    db: Session = Depends(get_db)
+):
+    """Super-Admin/Warden creates another Warden / Assistant Warden account."""
+    existing = db.query(User).filter(User.email == payload.email.lower()).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="An account with this email already exists.")
+
+    hashed_pw = hash_password(payload.password)
+    new_warden = User(
+        email=payload.email.lower(),
+        hashed_password=hashed_pw,
+        full_name=payload.full_name,
+        role="warden",
+        status="APPROVED",
+        phone=payload.phone or "+91 98765 00001",
+        hostel_block=payload.hostel_block or "Admin Wing",
+        room_number=payload.room_number or "W-01",
+        address="Hostel Warden Headquarters, ASU Campus",
+        profile_photo="/frontend/assets/default_avatar.svg"
+    )
+    db.add(new_warden)
+    db.commit()
+    db.refresh(new_warden)
+    return new_warden
 
 @router.get("/all", response_model=List[UserOut])
 def list_all_users(

@@ -64,6 +64,15 @@ class WorkerCreateRequest(BaseModel):
         return v_clean
 
 
+class WardenCreateRequest(BaseModel):
+    email: EmailStr
+    password: str = Field(..., min_length=6, max_length=100)
+    full_name: str = Field(..., min_length=2, max_length=100)
+    phone: Optional[str] = Field(None, max_length=20)
+    hostel_block: Optional[str] = Field("Admin Wing", max_length=50)
+    room_number: Optional[str] = Field("W-01", max_length=30)
+
+
 class UserProfileUpdateRequest(BaseModel):
     full_name: Optional[str] = Field(None, min_length=2, max_length=100)
     phone: Optional[str] = Field(None, min_length=7, max_length=15)
