@@ -17,9 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expose port
-EXPOSE 8000
-
-ENV PORT=8000
+ENV PYTHONUNBUFFERED=1
 ENV HOST=0.0.0.0
 ENV APP_ENV=production
 ENV DEBUG=false
